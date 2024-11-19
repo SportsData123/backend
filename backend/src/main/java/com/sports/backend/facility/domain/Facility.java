@@ -50,10 +50,10 @@ public class Facility {
     private String nationFlag;
 
     @ManyToOne
-    @JoinColumn(name = "city_name", referencedColumnName = "cityName")
+    @JoinColumn(name = "city_id", referencedColumnName = "cityId", nullable = false)
     private City city;
 
     @ManyToOne
-    @JoinColumn(name = "district_name", referencedColumnName = "districtName")
+    @JoinColumn(name = "district_id", referencedColumnName = "districtId", nullable = false)
     private District district;
 }

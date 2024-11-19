@@ -25,9 +25,9 @@ public class City {
     @Column(nullable = false, length = 2, unique = true)
     private String cityCode; // 도시 코드
 
-    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "city", cascade = CascadeType.REMOVE)
     private List<District> districts; // 도시와 연결된 지역 목록
 
-    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "city", cascade = CascadeType.REMOVE)
     private List<Facility> facilities; // 도시와 연결된 시설 목록
 }
