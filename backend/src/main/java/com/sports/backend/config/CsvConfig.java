@@ -12,11 +12,7 @@ import java.util.List;
 public class CsvConfig {
     public static <T> List<T> parseCsv(String filePath, Class<T> clazz) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
-            String firstLine = reader.readLine();
-            if (firstLine != null && firstLine.startsWith("\uFEFF")) {
-                firstLine = firstLine.substring(1);
-            }
-            return new CsvToBeanBuilder<T>(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))
+            return new CsvToBeanBuilder<T>(reader)
                     .withType(clazz)
                     .withIgnoreLeadingWhiteSpace(true)
                     .build()
