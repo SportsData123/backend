@@ -27,7 +27,7 @@ public class District {
     private String districtCode; // 지역 코드
 
     @ManyToOne
-    @JoinColumn(name = "city_name", referencedColumnName = "cityName", nullable = false)
+    @JoinColumn(name = "city_name", referencedColumnName = "city_name", nullable = false)
     private City city; // 지역이 속한 도시
 
     @OneToMany(mappedBy = "district", cascade = CascadeType.REMOVE)
