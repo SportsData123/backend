@@ -2,6 +2,7 @@ package com.sports.backend.facility.domain;
 
 import com.sports.backend.city.domain.City;
 import com.sports.backend.district.domain.District;
+import com.sports.backend.facilityBusiness.domain.FacilityBusiness;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,17 +11,14 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@Table(name = "facility")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "facility")
 public class Facility {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long facilityId;
-
-    @Column(nullable = false, length = 10)
-    private String facilityName;
+    private int facilityId;
 
     @Column(length = 10)
     private String facilityType;
@@ -37,11 +35,11 @@ public class Facility {
     @Column(length = 10)
     private String zipCode;
 
-    @Column(precision = 9, scale = 6)
-    private Double longitude;
+    @Column
+    private double longitude;
 
-    @Column(precision = 9, scale = 6)
-    private Double latitude;
+    @Column
+    private double latitude;
 
     @Column(length = 10)
     private String inOutType;
@@ -50,10 +48,14 @@ public class Facility {
     private String nationFlag;
 
     @ManyToOne
-    @JoinColumn(name = "city_id", referencedColumnName = "cityId", nullable = false)
+    @JoinColumn(name = "city_name", referencedColumnName = "cityName", nullable = false)
     private City city;
 
     @ManyToOne
-    @JoinColumn(name = "district_id", referencedColumnName = "districtId", nullable = false)
+    @JoinColumn(name = "district_name", referencedColumnName = "districtName", nullable = false)
     private District district;
+
+    @OneToOne
+    @JoinColumn(name = "facility_name", referencedColumnName = "facilityName", nullable = false)
+    private FacilityBusiness facilityName;
 }
