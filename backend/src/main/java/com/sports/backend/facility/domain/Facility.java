@@ -48,7 +48,7 @@ public class Facility {
     private String nationFlag;
 
     @ManyToOne
-    @JoinColumn(name = "city_name", referencedColumnName = "cityName", nullable = false)
+    @JoinColumn(name = "city_name", referencedColumnName = "city_name", nullable = false)
     private City city;
 
     @ManyToOne
