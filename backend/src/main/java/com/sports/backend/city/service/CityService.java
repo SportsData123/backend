@@ -1,78 +1,95 @@
 package com.sports.backend.city.service;
 
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvValidationException;
 import com.sports.backend.city.dao.CityRepository;
 import com.sports.backend.city.domain.City;
-import com.sports.backend.city.dto.CityDto;
 import com.sports.backend.city.dto.CityResponseDto;
-import com.sports.backend.config.CsvConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.io.File;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CityService {
-    private static final Logger logger = LoggerFactory.getLogger(CityService.class);
-
     private final CityRepository cityRepository;
 
-    public CityService(CityRepository cityRepository) {
-        this.cityRepository = cityRepository;
+    @PostConstruct
+    public void addressInit() {
+        if (!dataAlreadyLoaded(cityRepository)) {
+            log.info("City 데이터가 비어 있습니다. CSV 파일을 로드합니다.");
+            importCityData("city_file.csv");
+        } else {
+            log.info("City 데이터가 이미 로드되어 있습니다.");
+        }
+    }
+
+    private boolean dataAlreadyLoaded(CityRepository repository) {
+        return repository.count() > 0;
     }
 
     @Transactional
-    public void importCityData() {
+    public void importCityData(String fileName) {
         try {
-            // 상대 경로에 위치한 파일 읽기
-            File csvFile = new ClassPathResource("city_file.csv").getFile();
+            log.info("CSV 파일 {} 로드 시작", fileName);
 
-            // 기존의 CsvConfig.parseCsv 메서드 호출
-            List<CityDto> cityCsvDtos = CsvConfig.parseCsv(csvFile.getAbsolutePath(), CityDto.class);
-            cityCsvDtos.forEach(dto -> System.out.println("로드된 데이터: " + dto));
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file = new File(
+                    URLDecoder.decode(
+                            Objects.requireNonNull(classLoader.getResource(fileName)).getFile(),
+                            StandardCharsets.UTF_8
+                    )
+            );
 
-            if (cityCsvDtos.isEmpty()) {
-                logger.warn("CSV 파일이 비어 있습니다. 파일 경로: {}", csvFile.getAbsolutePath());
+            if (!file.exists()) {
+                log.error("파일이 존재하지 않습니다: {}", file.getAbsolutePath());
                 return;
             }
+            FileReader reader = new FileReader(file);
+            CSVReader csvReader = new CSVReader(reader);
 
-            for (CityDto dto : cityCsvDtos) {
-                logger.debug("CSV 데이터 처리 중: {}", dto);
+            csvReader.readNext(); // 헤더 스킵
+            String[] nextRecord;
+            List<City> cities = new ArrayList<>();
 
+            while ((nextRecord = csvReader.readNext()) != null) {
                 try {
-                    String cityCode = dto.getCityCode();
-                    String cityName = dto.getCityName();
-                    String exist = dto.getExist();
+                    String cityCode = nextRecord[0].substring(0, 2);  // 법정동코드 (왼쪽 2자리)
+                    String cityName = nextRecord[1].split(" ")[0];    // 법정동명 (첫 단어)
+                    String exist = nextRecord[2];                     // 폐지여부
 
-                    if (cityCode != null && "존재".equals(exist)) {
-                        String twoDigitCityCode = cityCode.substring(0, 2);
-                        String trimmedCityName = cityName.split(" ")[0];
+                    log.debug("처리 중 데이터: 법정동코드={}, 법정동명={}, 폐지여부={}", cityCode, cityName, exist);
 
-                        logger.debug("현재 처리 중인 데이터: {}", dto);
-
-                        if (!cityRepository.existsByCityCode(twoDigitCityCode)) {
-                            City city = City.builder()
-                                    .cityName(trimmedCityName)
-                                    .cityCode(twoDigitCityCode)
-                                    .build();
-                            cityRepository.save(city);
-                            logger.info("도시 저장 성공: {}, {}", trimmedCityName, twoDigitCityCode);
-                        }
-                    } else {
-                        logger.warn("유효하지 않은 데이터: {}", dto);
+                    if ("존재".equals(exist) && !cityRepository.existsByCityName(cityName)) {
+                        City city = City.builder()
+                                .cityCode(cityCode)
+                                .cityName(cityName)
+                                .build();
+                        cityRepository.save(city);  // 중복 확인 후 바로 저장
                     }
                 } catch (Exception e) {
-                    logger.error("도시 데이터를 처리하는 중 오류 발생. 데이터: {}, 이유: {}", dto, e.getMessage());
+                    log.warn("데이터 처리 중 오류 발생. 레코드: {}, 이유: {}", nextRecord, e.getMessage());
                 }
             }
 
-            logger.info("도시 데이터 저장 완료.");
-        } catch (Exception e) {
-            throw new RuntimeException("CSV 파일 처리 중 오류 발생: " + e.getMessage(), e);
+            log.info("CSV 데이터 저장 완료.");
+            csvReader.close();
+        } catch (IOException | CsvValidationException e) {
+            log.error("CSV 파일 처리 중 오류 발생: {}", e.getMessage(), e);
         }
     }
 

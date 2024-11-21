@@ -25,7 +25,7 @@ public class CityController {
 
     @PostMapping("/import")
     public ResponseEntity<ApiResponse<List<CityResponseDto>>> importCities() {
-        cityService.importCityData();
+        cityService.importCityData("city_file.csv ");
         return ResponseEntity.ok(new ApiResponse<>(200, "도시 데이터가 성공적으로 저장되었습니다.", null));
     }
 }
