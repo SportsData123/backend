@@ -17,7 +17,7 @@ public class District {
     @Column(name = "district_id")
     private int districtId; // 지역 ID (자동 증가)
 
-    @Column(name = "district_code", nullable = false, length = 3, unique = true)
+    @Column(name = "district_code", nullable = false, length = 3)
     private String districtCode; // 법정동코드 중 3~5번째 자리
 
     @Column(name = "district_name", nullable = false, length = 50)
@@ -25,4 +25,8 @@ public class District {
 
     @Column(name = "city_code", nullable = false, length = 2)
     private String cityCode;
+
+    @ManyToOne
+    @JoinColumn(name = "city_id", nullable = false)
+    private City city; // 연결된 도시
 }
