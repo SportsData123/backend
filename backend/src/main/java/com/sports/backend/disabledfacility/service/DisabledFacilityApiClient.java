@@ -1,15 +1,14 @@
-package com.sports.backend.facility.service;
+package com.sports.backend.disabledfacility.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sports.backend.disabledfacility.dto.DisabledFacilityDto;
 import com.sports.backend.facility.dto.FacilityDto;
-import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -17,27 +16,19 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class FacilityApiClient {
-
+public class DisabledFacilityApiClient {
     private final RestTemplate restTemplate;
 
-    public List<FacilityDto> fetchFacilities(String serviceKey, int pageNo, int numOfRows) {
+    public List<DisabledFacilityDto> fetchDisabledFacilities(String serviceKey, int pageNo, int numOfRows) {
         try {
-            // URI를 사용하여 URL 생성
             URI uri = makeUri(serviceKey, pageNo, numOfRows);
             log.info("API 호출 URI: {}", uri);
 
-            // JSON 문자열로 응답 받기
             String jsonString = restTemplate.getForObject(uri, String.class);
 
-            // 응답 로그 출력
-            // log.info("API 응답 데이터: {}", jsonString);
-
-            // JSON 파싱
             JSONParser jsonParser = new JSONParser();
             JSONObject jsonObject = (JSONObject) jsonParser.parse(jsonString);
 
@@ -70,10 +61,10 @@ public class FacilityApiClient {
             }
 
             // DTO 리스트로 변환
-            List<FacilityDto> result = new ArrayList<>();
+            List<DisabledFacilityDto> result = new ArrayList<>();
             for (Object o : jsonItemList) {
                 JSONObject item = (JSONObject) o;
-                FacilityDto dto = mapToFacilityDto(item);
+                DisabledFacilityDto dto = mapToDisabledFacilityDto(item);
                 if (dto != null) { // null 객체 제외
                     result.add(dto);
                 }
@@ -91,51 +82,24 @@ public class FacilityApiClient {
 
     // URI 생성
     private URI makeUri(String serviceKey, int pageNo, int numOfRows) {
-        return UriComponentsBuilder.fromHttpUrl("http://apis.data.go.kr/B551014/SRVC_API_SFMS_FACI/TODZ_API_SFMS_FACI")
+        return UriComponentsBuilder.fromHttpUrl("https://apis.data.go.kr/B551014/SRVC_OD_API_FACIL_MNG_DVOUCHER/TODZ_API_MNG_DVOUCHER_I")
                 .queryParam("serviceKey", serviceKey)  // 인증키
                 .queryParam("pageNo", pageNo)          // 페이지 번호
                 .queryParam("numOfRows", numOfRows)    // 한 페이지 결과 수
                 .queryParam("resultType", "json")      // 결과 형식
-                .build(true)                           // 자동 인코딩
-                .toUri();                              // URI로 변환
+                .build(true)
+                .toUri();// 자동 인코딩
     }
 
-    // JSON 객체를 FacilityDto로 매핑
-    private FacilityDto mapToFacilityDto(JSONObject item) {
-        if (item.get("faci_nm") == null) { // 시설 이름이 없는 데이터 건너뛰기
-            log.warn("시설 이름이 없는 데이터가 감지되었습니다: {}", item);
-            return null;
-        }
-
-        String facilityStatus = (String) item.get("faci_stat_nm");
-        if ("폐지".equals(facilityStatus)) { // 존재여부가 '폐지'인 데이터 건너뛰기
-            log.warn("존재여부가 '폐지'인 데이터가 감지되었습니다: {}", item);
-            return null;
-        }
-
-        return FacilityDto.builder()
-                .facilityName((String) item.get("faci_nm"))
-                .facilityType((String) item.get("ftype_nm"))
-                .facilityStatus((String) item.get("faci_stat_nm"))
-                .roadAddress((String) item.get("faci_road_addr"))
-                .detailAddress((String) item.get("faci_road_daddr"))
-                .zipCode((String) item.get("faci_road_zip"))
-                .longitude(parseDouble(item.get("faci_lot")))
-                .latitude(parseDouble(item.get("faci_lat")))
-                .inOutType((String) item.get("inout_gbn_nm"))
-                .nationFlag((String) item.get("nation_yn"))
-                .cityName((String) item.get("cp_nm"))
-                .districtName((String) item.get("cpb_nm"))
+    private DisabledFacilityDto mapToDisabledFacilityDto(JSONObject item) {
+        return DisabledFacilityDto.builder()
+                .facilName((String) item.get("facil_nm"))
+                .resTelno((String) item.get("res_telno"))
+                .mainEventName((String) item.get("main_event_nm"))
+                .cityCode((String) item.get("city_cd"))
+                .cityName((String) item.get("city_nm"))
+                .districtCode((String) item.get("dist_cd"))
+                .districtName((String) item.get("local_nm"))
                 .build();
-    }
-
-    // 문자열 값을 Double로 변환
-    private Double parseDouble(Object value) {
-        try {
-            return value != null ? Double.parseDouble(value.toString()) : null;
-        } catch (NumberFormatException e) {
-            log.warn("좌표 값을 Double로 변환할 수 없습니다: {}", value);
-            return null;
-        }
     }
 }

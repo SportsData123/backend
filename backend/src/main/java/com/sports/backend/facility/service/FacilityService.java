@@ -75,7 +75,7 @@ public class FacilityService {
         District district = null;
 
         if (city != null) {
-            district = districtRepository.findByDistrictNameAndCityId(dto.getDistrictName(), city.getCityId());
+            district = districtRepository.findByDistrictNameAndCity_CityId(dto.getDistrictName(), city.getCityId());
         }
 
         return Facility.builder()
