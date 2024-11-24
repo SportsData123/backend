@@ -53,6 +53,8 @@ dependencies {
 
     // SLF4J
     implementation 'org.slf4j:slf4j-api:2.0.7'
+
+    implementation 'com.googlecode.json-simple:json-simple:1.1' // json-simple
 }
 
 tasks.named('test') {
