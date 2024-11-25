@@ -3,8 +3,6 @@ package com.sports.backend.disabledfacility.service;
 import com.sports.backend.disabledfacility.dao.DisabledFacilityRepository;
 import com.sports.backend.disabledfacility.domain.DisabledFacility;
 import com.sports.backend.disabledfacility.dto.DisabledFacilityDto;
-import com.sports.backend.facility.domain.Facility;
-import com.sports.backend.facility.dto.FacilityDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
