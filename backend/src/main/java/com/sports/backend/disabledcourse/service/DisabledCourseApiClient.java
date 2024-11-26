@@ -1,7 +1,6 @@
 package com.sports.backend.disabledcourse.service;
 
 import com.sports.backend.disabledcourse.dto.DisabledCourseDto;
-import com.sports.backend.disabledfacility.dto.DisabledFacilityDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONArray;
@@ -13,6 +12,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +83,7 @@ public class DisabledCourseApiClient {
 
     // URI 생성
     private URI makeUri(String serviceKey, int pageNo, int numOfRows) {
-        return UriComponentsBuilder.fromHttpUrl("https://apis.data.go.kr/B551014/SRVC_DVOUCHER_FACI_COURSE/TODZ_DVOUCHER_FACI_COURSE")
+        return UriComponentsBuilder.fromHttpUrl("http://apis.data.go.kr/B551014/SRVC_DVOUCHER_FACI_COURSE/TODZ_DVOUCHER_FACI_COURSE")
                 .queryParam("serviceKey", serviceKey)  // 인증키
                 .queryParam("pageNo", pageNo)          // 페이지 번호
                 .queryParam("numOfRows", numOfRows)    // 한 페이지 결과 수
@@ -92,12 +93,32 @@ public class DisabledCourseApiClient {
     }
 
     private DisabledCourseDto mapToDisabledCourseDto(JSONObject item) {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+
+        String rawStartTime = (String) item.get("start_time");
+        String rawEndTime = (String) item.get("end_time");
+
+        // 시간 파싱 전에 유효성 확인
+        LocalTime startTime = null;
+        LocalTime endTime = null;
+        try {
+            if (rawStartTime != null && rawStartTime.matches("\\d{2}:\\d{2}")) {
+                startTime = LocalTime.parse(rawStartTime, timeFormatter);
+            }
+            if (rawEndTime != null && rawEndTime.matches("\\d{2}:\\d{2}")) {
+                endTime = LocalTime.parse(rawEndTime, timeFormatter);
+            }
+        } catch (Exception e) {
+            log.warn("시간 파싱 실패: start_time={}, end_time={}", rawStartTime, rawEndTime, e);
+        }
+
         return DisabledCourseDto.builder()
                 .busiRegNo((String) item.get("busi_reg_no"))
                 .sportNm((String) item.get("cntnt_fst"))
                 .courseNm((String) item.get("course_nm"))
-                .startTime((String) item.get("start_time"))
-                .endTime((String) item.get("end_time"))
+                .startTime(startTime != null ? LocalTime.parse(startTime.toString()) : null) // String으로 변환 저장
+                .endTime(endTime != null ? LocalTime.parse(endTime.toString()) : null)       // String으로 변환 저장
                 .weekday((String) item.get("weekday"))
                 .courseSetaDesc((String) item.get("course_seta_desc"))
                 .settlAmt((String) item.get("settl_amt"))

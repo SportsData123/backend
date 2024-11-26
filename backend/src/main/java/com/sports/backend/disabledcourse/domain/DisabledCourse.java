@@ -1,8 +1,10 @@
 package com.sports.backend.disabledcourse.domain;
 
-import com.sports.backend.city.domain.City;
+import com.sports.backend.sport.Sport;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -27,17 +29,21 @@ public class DisabledCourse {
     private String courseNm; // 강좌명
 
     @Column (name = "start_time")
-    private String startTime; // 시작 시간
+    private LocalTime startTime; // 시작 시간
 
     @Column (name = "end_time")
-    private String endTime; // 종료 시간
+    private LocalTime endTime; // 종료 시간
 
     @Column (name = "weekday", length = 7)
     private String weekday; // 요일 구분 값 (1010100 -> 월 수 금)
 
-    @Column (name = "course_desc")
+    @Column (name = "course_desc", columnDefinition = "TEXT")
     private String courseSetaDesc; // 강좌 상세 설명
 
     @Column (name = "fee")
     private String settlAmt; // 결제 금액
+
+    @ManyToOne
+    @JoinColumn(name = "sport_id", nullable = false)
+    private Sport sport;
 }

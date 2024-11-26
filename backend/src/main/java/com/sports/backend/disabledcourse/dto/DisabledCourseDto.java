@@ -3,6 +3,8 @@ package com.sports.backend.disabledcourse.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalTime;
+
 @Data
 @Builder
 public class DisabledCourseDto {
@@ -10,8 +12,8 @@ public class DisabledCourseDto {
     private String busiRegNo;
     private String sportNm;
     private String courseNm;
-    private String startTime;
-    private String endTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private String weekday;
     private String courseSetaDesc;
     private String settlAmt;

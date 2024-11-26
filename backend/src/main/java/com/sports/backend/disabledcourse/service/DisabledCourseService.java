@@ -3,8 +3,6 @@ package com.sports.backend.disabledcourse.service;
 import com.sports.backend.disabledcourse.dao.DisabledCourseRepository;
 import com.sports.backend.disabledcourse.domain.DisabledCourse;
 import com.sports.backend.disabledcourse.dto.DisabledCourseDto;
-import com.sports.backend.disabledfacility.domain.DisabledFacility;
-import com.sports.backend.disabledfacility.dto.DisabledFacilityDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,14 +19,14 @@ public class DisabledCourseService {
 
     private boolean isDisabledCourseDataLoaded() {
         long count = disabledCourseRepository.count();
-        log.info("현재 Facility 테이블에 저장된 데이터 수: {}", count);
+        log.info("현재 Disabled Course 테이블에 저장된 데이터 수: {}", count);
         return count > 0;
     }
 
     @Transactional
     public void fetchAndSaveDisabledCourses(String serviceKey, int numOfRows) {
         if(isDisabledCourseDataLoaded()){
-            log.info("DisabledFacility 데이터가 이미 로드되어 있습니다. 저장 과정을 생략합니다.");
+            log.info("DisabledCourse 데이터가 이미 로드되어 있습니다. 저장 과정을 생략합니다.");
             return;
         }
 
@@ -67,7 +65,7 @@ public class DisabledCourseService {
                 .startTime(dto.getStartTime())
                 .endTime(dto.getEndTime())
                 .weekday(dto.getWeekday())
-                .courseSetaDesc(dto.getCourseNm())
+                .courseSetaDesc(dto.getCourseSetaDesc())
                 .settlAmt(dto.getSettlAmt())
                 .build();
     }

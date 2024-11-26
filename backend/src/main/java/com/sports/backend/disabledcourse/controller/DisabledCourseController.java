@@ -2,13 +2,9 @@ package com.sports.backend.disabledcourse.controller;
 
 import com.sports.backend.common.ApiResponse;
 import com.sports.backend.disabledcourse.service.DisabledCourseService;
-import com.sports.backend.disabledfacility.service.DisabledFacilityService;
-import com.sports.backend.facility.dto.FacilityResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/disabled-courses")
