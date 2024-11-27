@@ -20,10 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -156,7 +153,7 @@ public class FacilityService {
             });
         }
 
-// GeneralFacility 데이터 매핑
+        // GeneralFacility 데이터 매핑
         if (generalFacilities != null) {
             generalFacilities.forEach(generalFacility -> {
                 Facility facility = generalFacility.getFacility(); // 연결된 Facility 가져오기
@@ -169,7 +166,7 @@ public class FacilityService {
             });
         }
 
-// DisabledFacility 데이터 매핑
+        // DisabledFacility 데이터 매핑
         if (disabledFacilities != null) {
             disabledFacilities.forEach(disabledFacility -> {
                 Facility facility = disabledFacility.getFacility(); // 연결된 Facility 가져오기
@@ -226,5 +223,19 @@ public class FacilityService {
                         (disabledFacility != null ? "Y" : null))
                 .build();
     }
+
+    @Transactional(readOnly = true)
+    public Map<String, Object> getPaginationInfo(String cityId, String districtId, String isAccessibleForDisabled, int size) {
+        long totalCount = facilityRepository.countUnifiedByFilters(cityId, districtId, isAccessibleForDisabled);
+        int totalPages = (int) Math.ceil((double) totalCount / size);
+
+        Map<String, Object> paginationInfo = new HashMap<>();
+        paginationInfo.put("totalCount", totalCount);
+        paginationInfo.put("totalPages", totalPages);
+        paginationInfo.put("pageSize", size);
+
+        return paginationInfo;
+    }
+
 
 }

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/facilities")
@@ -34,5 +35,15 @@ public class FacilityController {
         return ResponseEntity.ok(new ApiResponse<>(200, "시설 데이터 조회 성공", facilities));
     }
 
+    @GetMapping("/pagination-info")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getPaginationInfo(
+            @RequestParam(required = false) String cityId,
+            @RequestParam(required = false) String districtId,
+            @RequestParam(required = false) String isAccessibleForDisabled,
+            @RequestParam(defaultValue = "10") int size) {
 
+        Map<String, Object> paginationInfo = facilityService.getPaginationInfo(cityId, districtId, isAccessibleForDisabled, size);
+
+        return ResponseEntity.ok(new ApiResponse<>(200, "페이지네이션 정보 조회 성공", paginationInfo));
+    }
 }
