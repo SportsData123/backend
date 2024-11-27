@@ -3,20 +3,22 @@ package com.sports.backend.disabledfacility.service;
 import com.sports.backend.disabledfacility.dao.DisabledFacilityRepository;
 import com.sports.backend.disabledfacility.domain.DisabledFacility;
 import com.sports.backend.disabledfacility.dto.DisabledFacilityDto;
+import com.sports.backend.disabledfacility.mapper.DisabledFacilityMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class DisabledFacilityService {
     private final DisabledFacilityRepository disabledFacilityRepository;
-    private final DisabledFacilityApiClient apiClient;
     private final DisabledFacilityApiClient disabledFacilityApiClient;
+    private final DisabledFacilityMapper disabledFacilityMapper;
 
     private boolean isDisabledFacilityDataLoaded() {
         long count = disabledFacilityRepository.count();
@@ -45,7 +47,7 @@ public class DisabledFacilityService {
 
             // Facility 엔티티로 변환 후 저장
             List<DisabledFacility> entities = disabledFacilities.stream()
-                    .map(this::mapToEntity)
+                    .map(disabledFacilityMapper::toEntity)
                     .toList();
 
             disabledFacilityRepository.saveAll(entities);
@@ -56,17 +58,5 @@ public class DisabledFacilityService {
             pageNo++;
             hasMoreData = disabledFacilities.size() == numOfRows; // 현재 페이지에 데이터가 가득 차 있으면 더 가져옴
         } while (hasMoreData);
-    }
-
-    private DisabledFacility mapToEntity(DisabledFacilityDto dto) {
-        return DisabledFacility.builder()
-                .facilName(dto.getFacilName())
-                .resTelno(dto.getResTelno())
-                .mainEventName(dto.getMainEventName())
-                .cityCode(dto.getCityCode())
-                .cityName(dto.getCityName())
-                .districtCode(dto.getDistrictCode())
-                .districtName(dto.getDistrictName())
-                .build();
     }
 }

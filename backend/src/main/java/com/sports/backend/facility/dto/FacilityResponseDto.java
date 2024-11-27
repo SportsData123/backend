@@ -1,10 +1,14 @@
 package com.sports.backend.facility.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class FacilityResponseDto {
     private int facilityId;
     private String facilityName;
@@ -19,4 +23,15 @@ public class FacilityResponseDto {
     private String nationFlag;
     private String cityName;
     private String districtName;
+
+    // GeneralFacility specific fields
+    private Integer generalFacilityId;
+    private String generalBrno;
+    private String generalFacilSn;
+
+    // DisabledFacility specific fields
+    private Integer disabledFacilityId;
+    private String disabledResTelno;
+    private String disabledMainEventName;
+    private String isAccessibleForDisabled;
 }

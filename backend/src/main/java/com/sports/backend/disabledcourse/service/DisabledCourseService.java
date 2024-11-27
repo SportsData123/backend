@@ -1,5 +1,6 @@
 package com.sports.backend.disabledcourse.service;
 
+import com.sports.backend.disabledcourse.mapper.DisabledCourseMapper;
 import com.sports.backend.disabledcourse.dao.DisabledCourseRepository;
 import com.sports.backend.disabledcourse.domain.DisabledCourse;
 import com.sports.backend.disabledcourse.dto.DisabledCourseDto;
@@ -16,6 +17,7 @@ import java.util.List;
 public class DisabledCourseService {
     private final DisabledCourseRepository disabledCourseRepository;
     private final DisabledCourseApiClient disabledCourseApiClient;
+    private final DisabledCourseMapper disabledCourseMapper;
 
     private boolean isDisabledCourseDataLoaded() {
         long count = disabledCourseRepository.count();
@@ -44,7 +46,7 @@ public class DisabledCourseService {
 
             // Facility 엔티티로 변환 후 저장
             List<DisabledCourse> entities = disabledCourses.stream()
-                    .map(this::mapToEntity)
+                    .map(disabledCourseMapper::toEntity)
                     .toList();
 
             disabledCourseRepository.saveAll(entities);
@@ -55,18 +57,5 @@ public class DisabledCourseService {
             pageNo++;
             hasMoreData = disabledCourses.size() == numOfRows; // 현재 페이지에 데이터가 가득 차 있으면 더 가져옴
         } while (hasMoreData);
-    }
-
-    private DisabledCourse mapToEntity(DisabledCourseDto dto) {
-        return DisabledCourse.builder()
-                .busiRegNo(dto.getBusiRegNo())
-                .sportNm(dto.getSportNm())
-                .courseNm(dto.getCourseNm())
-                .startTime(dto.getStartTime())
-                .endTime(dto.getEndTime())
-                .weekday(dto.getWeekday())
-                .courseSetaDesc(dto.getCourseSetaDesc())
-                .settlAmt(dto.getSettlAmt())
-                .build();
     }
 }

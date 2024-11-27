@@ -1,6 +1,7 @@
 package com.sports.backend.generalfacility.domain;
 
 import com.sports.backend.city.domain.City;
+import com.sports.backend.facility.domain.Facility;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,7 +45,14 @@ public class GeneralFacility {
     @Column(name = "facil_sn", length = 20)
     private String facilSn;
 
+    @Column(name = "is_accessible_for_disabled", length = 1)
+    private String isAccessibleForDisabled;
+
     @ManyToOne // City와 관계 설정
     @JoinColumn(name = "city_id", foreignKey = @ForeignKey(name = "fk_general_facility_city"))
     private City city; // City 엔터티와 연결
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "facility_id", referencedColumnName = "facility_id")
+    private Facility facility;
 }

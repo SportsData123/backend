@@ -1,6 +1,7 @@
 package com.sports.backend.disabledfacility.domain;
 
 import com.sports.backend.city.domain.City;
+import com.sports.backend.facility.domain.Facility;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,7 +39,14 @@ public class DisabledFacility {
     @Column(name = "district_name", length = 50)
     private String districtName;
 
+    @Column(name = "is_accessible_for_disabled", length = 1)
+    private String isAccessibleForDisabled;
+
     @ManyToOne
     @JoinColumn(name = "city_id", referencedColumnName = "city_id")
     private City city;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "facility_id", referencedColumnName = "facility_id")
+    private Facility facility;
 }

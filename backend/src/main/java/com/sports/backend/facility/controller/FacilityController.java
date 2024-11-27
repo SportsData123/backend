@@ -25,9 +25,12 @@ public class FacilityController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<FacilityResponseDto>>> getFacilities(
+            @RequestParam(required = false) String cityId,
+            @RequestParam(required = false) String districtId,
+            @RequestParam(required = false) String isAccessibleForDisabled,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
-        List<FacilityResponseDto> facilities = facilityService.getFacilities(page, size);
+        List<FacilityResponseDto> facilities = facilityService.getFacilities(cityId, districtId, isAccessibleForDisabled, page, size);
         return ResponseEntity.ok(new ApiResponse<>(200, "시설 데이터 조회 성공", facilities));
     }
 

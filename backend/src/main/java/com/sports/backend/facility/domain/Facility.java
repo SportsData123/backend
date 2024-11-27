@@ -54,11 +54,15 @@ public class Facility {
     @Column(name = "district_name", length = 50)
     private String districtName;
 
+
+    @Column(name = "is_accessible_for_disabled", length = 1)
+    private String isAccessibleForDisabled;
+
     @ManyToOne(fetch = FetchType.LAZY) // Lazy loading for optimization
     @JoinColumn(name = "city_id") // Foreign key column in Facility table
     private City city;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "district_id")
     private District district;
 
