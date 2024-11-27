@@ -46,7 +46,7 @@ public class DisabledFacility {
     @JoinColumn(name = "city_id", referencedColumnName = "city_id")
     private City city;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_id", referencedColumnName = "facility_id")
     private Facility facility;
 }

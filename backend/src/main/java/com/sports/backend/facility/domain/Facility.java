@@ -1,7 +1,9 @@
 package com.sports.backend.facility.domain;
 
 import com.sports.backend.city.domain.City;
+import com.sports.backend.disabledfacility.domain.DisabledFacility;
 import com.sports.backend.district.domain.District;
+import com.sports.backend.generalfacility.domain.GeneralFacility;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -65,5 +67,11 @@ public class Facility {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "district_id")
     private District district;
+
+    @OneToOne(mappedBy = "facility", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private GeneralFacility generalFacility;
+
+    @OneToOne(mappedBy = "facility", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private DisabledFacility disabledFacility;
 
 }

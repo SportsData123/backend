@@ -146,32 +146,42 @@ public class FacilityService {
         // Facility 데이터 매핑
         if (facilities != null) {
             facilities.forEach(facility -> {
-                String uniqueKey = facility.getFacilityName() + facility.getCity().getCityId(); // 중복 판단 기준
-                if (uniqueFacilities.add(uniqueKey)) { // 새로운 데이터만 추가
-                    results.add(mapToResponseDto(facility, null, null));
+                GeneralFacility generalFacility = facility.getGeneralFacility(); // 연결된 GeneralFacility 가져오기
+                DisabledFacility disabledFacility = facility.getDisabledFacility(); // 연결된 DisabledFacility 가져오기
+
+                String uniqueKey = facility.getFacilityName() + (facility.getCity() != null ? facility.getCity().getCityId() : "");
+                if (uniqueFacilities.add(uniqueKey)) {
+                    results.add(mapToResponseDto(facility, generalFacility, disabledFacility));
                 }
             });
         }
 
-        // GeneralFacility 데이터 매핑
+// GeneralFacility 데이터 매핑
         if (generalFacilities != null) {
             generalFacilities.forEach(generalFacility -> {
+                Facility facility = generalFacility.getFacility(); // 연결된 Facility 가져오기
+                DisabledFacility disabledFacility = facility != null ? facility.getDisabledFacility() : null; // 연결된 DisabledFacility 가져오기
+
                 String uniqueKey = generalFacility.getFacilName() + generalFacility.getCityCode();
                 if (uniqueFacilities.add(uniqueKey)) {
-                    results.add(mapToResponseDto(null, generalFacility, null));
+                    results.add(mapToResponseDto(facility, generalFacility, disabledFacility));
                 }
             });
         }
 
-        // DisabledFacility 데이터 매핑
+// DisabledFacility 데이터 매핑
         if (disabledFacilities != null) {
             disabledFacilities.forEach(disabledFacility -> {
+                Facility facility = disabledFacility.getFacility(); // 연결된 Facility 가져오기
+                GeneralFacility generalFacility = facility != null ? facility.getGeneralFacility() : null; // 연결된 GeneralFacility 가져오기
+
                 String uniqueKey = disabledFacility.getFacilName() + disabledFacility.getCityCode();
                 if (uniqueFacilities.add(uniqueKey)) {
-                    results.add(mapToResponseDto(null, null, disabledFacility));
+                    results.add(mapToResponseDto(facility, generalFacility, disabledFacility));
                 }
             });
         }
+
 
         return results;
     }

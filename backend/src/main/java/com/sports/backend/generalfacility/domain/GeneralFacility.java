@@ -52,7 +52,7 @@ public class GeneralFacility {
     @JoinColumn(name = "city_id", foreignKey = @ForeignKey(name = "fk_general_facility_city"))
     private City city; // City 엔터티와 연결
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_id", referencedColumnName = "facility_id")
     private Facility facility;
 }
