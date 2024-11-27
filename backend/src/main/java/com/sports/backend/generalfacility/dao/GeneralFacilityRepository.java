@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface GeneralFacilityRepository extends JpaRepository<GeneralFacility, Integer>{
     @Query("SELECT gf FROM GeneralFacility gf WHERE " +
-            "(:cityId IS NULL AND :districtId IS NULL) OR " +
             "(:cityId IS NULL OR gf.cityCode = :cityId) AND " +
-            "(:districtId IS NULL OR gf.districtCode = :districtId)")
-    List<GeneralFacility> findWithFilters(String cityId, String districtId, Pageable pageable);
+            "(:districtId IS NULL OR gf.districtCode = :districtId) AND " +
+            "(:isAccessibleForDisabled IS NULL OR COALESCE(gf.isAccessibleForDisabled, 'N') = :isAccessibleForDisabled)")
+    List<GeneralFacility> findWithFilters(String cityId, String districtId, String isAccessibleForDisabled, Pageable pageable);
 }

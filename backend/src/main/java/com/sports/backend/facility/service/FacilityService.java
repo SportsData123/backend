@@ -21,7 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -105,22 +107,29 @@ public class FacilityService {
     public List<FacilityResponseDto> getFacilities(String cityId, String districtId, String isAccessibleForDisabled, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        boolean noFilters = (cityId == null && districtId == null && isAccessibleForDisabled == null);
-
         // Facility 데이터 조회
-        List<Facility> facilities = noFilters
-                ? facilityRepository.findAll(pageable).getContent() // 필터 없이 Facility 전체 데이터 조회
-                : facilityRepository.findAllWithFilters(cityId, districtId, isAccessibleForDisabled, pageable);
+        List<Facility> facilities = facilityRepository.findAllWithFilters(
+                cityId != null ? cityId : null,
+                districtId != null ? districtId : null,
+                isAccessibleForDisabled != null ? isAccessibleForDisabled : null,
+                pageable
+        );
 
         // GeneralFacility 데이터 조회
-        List<GeneralFacility> generalFacilities = noFilters
-                ? generalFacilityRepository.findAll(pageable).getContent() // 필터 없이 GeneralFacility 전체 데이터 조회
-                : generalFacilityRepository.findWithFilters(cityId, districtId, pageable);
+        List<GeneralFacility> generalFacilities = generalFacilityRepository.findWithFilters(
+                cityId != null ? cityId : null,
+                districtId != null ? districtId : null,
+                isAccessibleForDisabled != null ? isAccessibleForDisabled : null,
+                pageable
+        );
 
         // DisabledFacility 데이터 조회
-        List<DisabledFacility> disabledFacilities = noFilters
-                ? disabledFacilityRepository.findAll(pageable).getContent() // 필터 없이 DisabledFacility 전체 데이터 조회
-                : disabledFacilityRepository.findWithFilters(cityId, districtId, pageable);
+        List<DisabledFacility> disabledFacilities = disabledFacilityRepository.findWithFilters(
+                cityId != null ? cityId : null,
+                districtId != null ? districtId : null,
+                isAccessibleForDisabled != null ? isAccessibleForDisabled : null,
+                pageable
+        );
 
         // 통합 결과 반환
         return combineResults(facilities, generalFacilities, disabledFacilities);
@@ -131,25 +140,42 @@ public class FacilityService {
             List<GeneralFacility> generalFacilities,
             List<DisabledFacility> disabledFacilities) {
 
+        Set<String> uniqueFacilities = new HashSet<>(); // 중복 제거를 위한 Set
         List<FacilityResponseDto> results = new ArrayList<>();
 
         // Facility 데이터 매핑
         if (facilities != null) {
-            facilities.forEach(facility -> results.add(mapToResponseDto(facility, null, null)));
+            facilities.forEach(facility -> {
+                String uniqueKey = facility.getFacilityName() + facility.getCity().getCityId(); // 중복 판단 기준
+                if (uniqueFacilities.add(uniqueKey)) { // 새로운 데이터만 추가
+                    results.add(mapToResponseDto(facility, null, null));
+                }
+            });
         }
 
         // GeneralFacility 데이터 매핑
         if (generalFacilities != null) {
-            generalFacilities.forEach(generalFacility -> results.add(mapToResponseDto(null, generalFacility, null)));
+            generalFacilities.forEach(generalFacility -> {
+                String uniqueKey = generalFacility.getFacilName() + generalFacility.getCityCode();
+                if (uniqueFacilities.add(uniqueKey)) {
+                    results.add(mapToResponseDto(null, generalFacility, null));
+                }
+            });
         }
 
         // DisabledFacility 데이터 매핑
         if (disabledFacilities != null) {
-            disabledFacilities.forEach(disabledFacility -> results.add(mapToResponseDto(null, null, disabledFacility)));
+            disabledFacilities.forEach(disabledFacility -> {
+                String uniqueKey = disabledFacility.getFacilName() + disabledFacility.getCityCode();
+                if (uniqueFacilities.add(uniqueKey)) {
+                    results.add(mapToResponseDto(null, null, disabledFacility));
+                }
+            });
         }
 
         return results;
     }
+
 
 
     private FacilityResponseDto mapToResponseDto(Facility facility, GeneralFacility generalFacility, DisabledFacility disabledFacility) {

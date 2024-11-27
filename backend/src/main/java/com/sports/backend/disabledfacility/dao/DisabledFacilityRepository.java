@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface DisabledFacilityRepository extends JpaRepository<DisabledFacility, Integer>{
     @Query("SELECT df FROM DisabledFacility df WHERE " +
-            "(:cityId IS NULL AND :districtId IS NULL) OR " +
             "(:cityId IS NULL OR df.cityCode = :cityId) AND " +
-            "(:districtId IS NULL OR df.districtCode = :districtId)")
-    List<DisabledFacility> findWithFilters(String cityId, String districtId, Pageable pageable);
+            "(:districtId IS NULL OR df.districtCode = :districtId) AND " +
+            "(:isAccessibleForDisabled IS NULL OR df.isAccessibleForDisabled = :isAccessibleForDisabled)")
+    List<DisabledFacility> findWithFilters(String cityId, String districtId, String isAccessibleForDisabled, Pageable pageable);
 }

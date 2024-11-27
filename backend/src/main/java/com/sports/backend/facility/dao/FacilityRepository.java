@@ -8,10 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface FacilityRepository extends JpaRepository<Facility, Long> {
-    @Query("SELECT f FROM Facility f LEFT JOIN FETCH f.city c LEFT JOIN FETCH f.district d " +
-            "WHERE (:cityId IS NULL AND :districtId IS NULL AND :isAccessibleForDisabled IS NULL) OR " +
-            "(:cityId IS NULL OR c.cityId = :cityId) AND " +
-            "(:districtId IS NULL OR d.districtId = :districtId) AND " +
-            "(:isAccessibleForDisabled IS NULL OR f.isAccessibleForDisabled = :isAccessibleForDisabled)")
+    @Query("SELECT f FROM Facility f WHERE " +
+            "(:cityId IS NULL OR f.city.cityId = :cityId) AND " +
+            "(:districtId IS NULL OR f.district.districtId = :districtId) AND " +
+            "(:isAccessibleForDisabled IS NULL OR COALESCE(f.isAccessibleForDisabled, 'N') = :isAccessibleForDisabled)")
     List<Facility> findAllWithFilters(String cityId, String districtId, String isAccessibleForDisabled, Pageable pageable);
 }

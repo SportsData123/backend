@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FacilityResponseDto {
-    private int facilityId;
+    private Integer facilityId;
     private String facilityName;
     private String facilityType;
     private String facilityStatus;
