@@ -28,6 +28,8 @@ public class FacilityResponseDto {
     private Integer generalFacilityId;
     private String generalBrno;
     private String generalFacilSn;
+    private String generalResTelno;
+    private String generalMainEventName;
 
     // DisabledFacility specific fields
     private Integer disabledFacilityId;

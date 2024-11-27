@@ -215,6 +215,8 @@ public class FacilityService {
                 .generalFacilityId(generalFacility != null ? generalFacility.getGeneralFacilityId() : null)
                 .generalBrno(generalFacility != null ? generalFacility.getBrno() : null)
                 .generalFacilSn(generalFacility != null ? generalFacility.getFacilSn() : null)
+                .generalMainEventName(generalFacility != null ? generalFacility.getMainEventName() : null)
+                .generalResTelno(generalFacility != null ? generalFacility.getResTelno() : null)
 
                 // DisabledFacility 데이터
                 .disabledFacilityId(disabledFacility != null ? disabledFacility.getDisabledFacilityId() : null)
