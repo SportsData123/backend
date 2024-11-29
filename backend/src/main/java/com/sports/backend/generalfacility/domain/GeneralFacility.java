@@ -1,6 +1,7 @@
 package com.sports.backend.generalfacility.domain;
 
 import com.sports.backend.city.domain.City;
+import com.sports.backend.district.domain.District;
 import com.sports.backend.facility.domain.Facility;
 import jakarta.persistence.*;
 import lombok.*;
@@ -51,6 +52,10 @@ public class GeneralFacility {
     @ManyToOne // City와 관계 설정
     @JoinColumn(name = "city_id", foreignKey = @ForeignKey(name = "fk_general_facility_city"))
     private City city; // City 엔터티와 연결
+
+    @ManyToOne
+    @JoinColumn(name = "district_id", foreignKey = @ForeignKey(name = "fk_general_facility_district"))
+    private District district;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_id", referencedColumnName = "facility_id")

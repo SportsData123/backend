@@ -1,6 +1,7 @@
 package com.sports.backend.disabledfacility.domain;
 
 import com.sports.backend.city.domain.City;
+import com.sports.backend.district.domain.District;
 import com.sports.backend.facility.domain.Facility;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,10 +44,14 @@ public class DisabledFacility {
     private String isAccessibleForDisabled;
 
     @ManyToOne
-    @JoinColumn(name = "city_id", referencedColumnName = "city_id")
+    @JoinColumn(name = "city_id", foreignKey = @ForeignKey(name = "fk_disabled_facility_city"))
     private City city;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "facility_id", referencedColumnName = "facility_id")
+    @ManyToOne
+    @JoinColumn(name = "district_id", foreignKey = @ForeignKey(name = "fk_disabled_facility_district"))
+    private District district;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "facility_id", nullable = true) // 외래키를 nullable로 설정
     private Facility facility;
 }

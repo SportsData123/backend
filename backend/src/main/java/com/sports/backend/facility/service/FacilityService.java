@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -106,25 +107,25 @@ public class FacilityService {
 
         // Facility 데이터 조회
         List<Facility> facilities = facilityRepository.findAllWithFilters(
-                cityId != null ? cityId : null,
-                districtId != null ? districtId : null,
-                isAccessibleForDisabled != null ? isAccessibleForDisabled : null,
+                cityId,
+                districtId,
+                isAccessibleForDisabled,
                 pageable
         );
 
         // GeneralFacility 데이터 조회
         List<GeneralFacility> generalFacilities = generalFacilityRepository.findWithFilters(
-                cityId != null ? cityId : null,
-                districtId != null ? districtId : null,
-                isAccessibleForDisabled != null ? isAccessibleForDisabled : null,
+                cityId,
+                districtId,
+                isAccessibleForDisabled,
                 pageable
         );
 
         // DisabledFacility 데이터 조회
         List<DisabledFacility> disabledFacilities = disabledFacilityRepository.findWithFilters(
-                cityId != null ? cityId : null,
-                districtId != null ? districtId : null,
-                isAccessibleForDisabled != null ? isAccessibleForDisabled : null,
+                cityId,
+                districtId,
+                isAccessibleForDisabled,
                 pageable
         );
 
@@ -137,50 +138,30 @@ public class FacilityService {
             List<GeneralFacility> generalFacilities,
             List<DisabledFacility> disabledFacilities) {
 
-        Set<String> uniqueFacilities = new HashSet<>(); // 중복 제거를 위한 Set
-        List<FacilityResponseDto> results = new ArrayList<>();
+        Set<String> uniqueKeys = new HashSet<>(); // 중복 제거를 위한 Set
+        return Stream.of(
+                        facilities.stream()
+                                .flatMap(facility -> facility.getDisabledFacility().stream()
+                                        .map(disabledFacility -> mapToResponseDto(facility, facility.getGeneralFacility(), disabledFacility))), // Facility와 DisabledFacility 연결된 경우
+                        generalFacilities.stream()
+                                .map(gf -> mapToResponseDto(gf.getFacility(), gf, null)), // GeneralFacility 데이터
+                        disabledFacilities.stream()
+                                .map(df -> mapToResponseDto(
+                                        df.getFacility(),
+                                        Optional.ofNullable(df.getFacility())
+                                                .map(Facility::getGeneralFacility)
+                                                .orElse(null),
+                                        df))
+                ).flatMap(stream -> stream)
+                .filter(dto -> uniqueKeys.add(generateUniqueKey(dto)))
+                .toList();
+    }
 
-        // Facility 데이터 매핑
-        if (facilities != null) {
-            facilities.forEach(facility -> {
-                GeneralFacility generalFacility = facility.getGeneralFacility(); // 연결된 GeneralFacility 가져오기
-                DisabledFacility disabledFacility = facility.getDisabledFacility(); // 연결된 DisabledFacility 가져오기
-
-                String uniqueKey = facility.getFacilityName() + (facility.getCity() != null ? facility.getCity().getCityId() : "");
-                if (uniqueFacilities.add(uniqueKey)) {
-                    results.add(mapToResponseDto(facility, generalFacility, disabledFacility));
-                }
-            });
-        }
-
-        // GeneralFacility 데이터 매핑
-        if (generalFacilities != null) {
-            generalFacilities.forEach(generalFacility -> {
-                Facility facility = generalFacility.getFacility(); // 연결된 Facility 가져오기
-                DisabledFacility disabledFacility = facility != null ? facility.getDisabledFacility() : null; // 연결된 DisabledFacility 가져오기
-
-                String uniqueKey = generalFacility.getFacilName() + generalFacility.getCityCode();
-                if (uniqueFacilities.add(uniqueKey)) {
-                    results.add(mapToResponseDto(facility, generalFacility, disabledFacility));
-                }
-            });
-        }
-
-        // DisabledFacility 데이터 매핑
-        if (disabledFacilities != null) {
-            disabledFacilities.forEach(disabledFacility -> {
-                Facility facility = disabledFacility.getFacility(); // 연결된 Facility 가져오기
-                GeneralFacility generalFacility = facility != null ? facility.getGeneralFacility() : null; // 연결된 GeneralFacility 가져오기
-
-                String uniqueKey = disabledFacility.getFacilName() + disabledFacility.getCityCode();
-                if (uniqueFacilities.add(uniqueKey)) {
-                    results.add(mapToResponseDto(facility, generalFacility, disabledFacility));
-                }
-            });
-        }
-
-
-        return results;
+    private String generateUniqueKey(FacilityResponseDto dto) {
+        return String.join("_",
+                Optional.ofNullable(dto.getFacilityName()).orElse(""),
+                Optional.ofNullable(dto.getCityName()).orElse(""),
+                Optional.ofNullable(dto.getDistrictName()).orElse(""));
     }
 
 

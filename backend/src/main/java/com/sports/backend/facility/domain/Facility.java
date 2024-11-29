@@ -7,6 +7,8 @@ import com.sports.backend.generalfacility.domain.GeneralFacility;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -71,7 +73,7 @@ public class Facility {
     @OneToOne(mappedBy = "facility", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private GeneralFacility generalFacility;
 
-    @OneToOne(mappedBy = "facility", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private DisabledFacility disabledFacility;
+    @OneToMany(mappedBy = "facility", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<DisabledFacility> disabledFacility;
 
 }
