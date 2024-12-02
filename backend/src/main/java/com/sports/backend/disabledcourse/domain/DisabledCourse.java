@@ -1,6 +1,6 @@
 package com.sports.backend.disabledcourse.domain;
 
-import com.sports.backend.sport.Sport;
+import com.sports.backend.sport.domain.Sport;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,6 +42,9 @@ public class DisabledCourse {
 
     @Column (name = "fee")
     private String settlAmt; // 결제 금액
+
+    @Column (name = "is_accessible_for_disabled")
+    private String isAccessibleForDisabled;
 
     @ManyToOne
     @JoinColumn(name = "sport_id", nullable = false)

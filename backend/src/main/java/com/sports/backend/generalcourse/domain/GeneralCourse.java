@@ -1,6 +1,6 @@
 package com.sports.backend.generalcourse.domain;
 
-import com.sports.backend.sport.Sport;
+import com.sports.backend.sport.domain.Sport;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,7 +40,16 @@ public class GeneralCourse {
     @Column (name = "course_desc", columnDefinition = "TEXT")
     private String courseSetaDesc; // 강좌 상세 설명
 
-    @ManyToOne
-    @JoinColumn(name = "sport_id", nullable = false)
-    private Sport sport;
+    @Column (name = "is_accessible_for_disabled")
+    private String isAccessibleForDisabled;
+
+    @Column (name = "facil_sn", length = 20)
+    private String facilSn;
+
+    @Column (name = "settl_amt")
+    private String settlAmt;
+
+    //@ManyToOne
+    //@JoinColumn(name = "sport_id", nullable = false)
+    //private Sport sport;
 }

@@ -120,6 +120,8 @@ public class GeneralCourseApiClient {
                 .endTime(endTime != null ? LocalTime.parse(endTime.toString()) : null)
                 .weekday((String) item.get("lectr_weekday_val"))
                 .courseSetaDesc((String) item.get("course_seta_desc_cn"))
+                .facilSn((String)item.get("facil_sn"))
+                .settlAmt((String)item.get("settl_amt"))
                 .build();
     }
 }

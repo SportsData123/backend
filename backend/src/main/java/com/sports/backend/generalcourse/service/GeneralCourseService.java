@@ -66,6 +66,8 @@ public class GeneralCourseService {
                 .endTime(dto.getEndTime())
                 .weekday(dto.getWeekday())
                 .courseSetaDesc(dto.getCourseSetaDesc())
+                .facilSn(dto.getFacilSn())
+                .settlAmt(dto.getSettlAmt())
                 .build();
     }
 }

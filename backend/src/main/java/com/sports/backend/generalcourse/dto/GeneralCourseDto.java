@@ -16,4 +16,6 @@ public class GeneralCourseDto {
     private LocalTime endTime;
     private String weekday;
     private String courseSetaDesc;
+    private String facilSn;
+    private String settlAmt;
 }

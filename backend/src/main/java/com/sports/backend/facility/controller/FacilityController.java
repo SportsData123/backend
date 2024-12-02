@@ -31,8 +31,12 @@ public class FacilityController {
             @RequestParam(required = false) String isAccessibleForDisabled,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
-        List<FacilityResponseDto> facilities = facilityService.getFacilities(cityId, districtId, isAccessibleForDisabled, page, size);
-        return ResponseEntity.ok(new ApiResponse<>(200, "시설 데이터 조회 성공", facilities));
+        try {
+            List<FacilityResponseDto> facilities = facilityService.getFacilities(cityId, districtId, isAccessibleForDisabled, page, size);
+            return ResponseEntity.ok(new ApiResponse<>(200, "시설 데이터 조회 성공", facilities));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ApiResponse<>(500, "시설 데이터 조회 실패: " + e.getMessage(), null));
+        }
     }
 
     @GetMapping("/pagination-info")
@@ -41,9 +45,11 @@ public class FacilityController {
             @RequestParam(required = false) String districtId,
             @RequestParam(required = false) String isAccessibleForDisabled,
             @RequestParam(defaultValue = "10") int size) {
-
-        Map<String, Object> paginationInfo = facilityService.getPaginationInfo(cityId, districtId, isAccessibleForDisabled, size);
-
-        return ResponseEntity.ok(new ApiResponse<>(200, "페이지네이션 정보 조회 성공", paginationInfo));
+        try {
+            Map<String, Object> paginationInfo = facilityService.getPaginationInfo(cityId, districtId, isAccessibleForDisabled, size);
+            return ResponseEntity.ok(new ApiResponse<>(200, "페이지네이션 정보 조회 성공", paginationInfo));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ApiResponse<>(500, "페이지네이션 정보 조회 실패: " + e.getMessage(), null));
+        }
     }
 }
