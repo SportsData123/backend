@@ -1,9 +1,7 @@
-package com.sports.backend.sport;
+package com.sports.backend.sport.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalTime;
 
 @Entity
 @Getter
