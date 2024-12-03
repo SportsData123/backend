@@ -18,6 +18,8 @@ public class DisabledFacilityMapper {
                 .cityName(dto.getCityName())
                 .districtCode(dto.getDistrictCode())
                 .districtName(dto.getDistrictName())
+                .roadAddr(dto.getRoadAddr())
+                .faciDaddr(dto.getFaciDaddr())
                 .build();
     }
 
@@ -33,6 +35,8 @@ public class DisabledFacilityMapper {
                 .cityName(entity.getCityName())
                 .districtCode(entity.getDistrictCode())
                 .districtName(entity.getDistrictName())
+                .roadAddr(entity.getRoadAddr())
+                .faciDaddr(entity.getFaciDaddr())
                 .build();
     }
 }

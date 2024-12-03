@@ -46,6 +46,39 @@ public class DisabledCourse {
     @Column (name = "is_accessible_for_disabled")
     private String isAccessibleForDisabled;
 
+    @Column(name = "road_addr", length = 255)
+    private String roadAddr;
+
+    @Column(name = "faci_daddr", length = 255)
+    private String faciDaddr;
+
+    @Column(name = "district_name", length = 50)
+    private String districtName;
+
+    @Column(name = "district_code", length = 3)
+    private String districtCode;
+
+    @Column(name = "district_id")
+    private Integer districtId;
+
+    @Column(name = "city_name", length = 10)
+    private String cityName;
+
+    @Column(name = "city_code", length = 2)
+    private String cityCode;
+
+    @Column(name = "city_id")
+    private Integer cityId;
+
+    @Column(name = "latitude", precision = 9)
+    private Double latitude;
+
+    @Column(name = "longitude", precision = 9)
+    private Double longitude;
+
+    @Column(name = "facility_id")
+    private Integer facilityId;
+
     @ManyToOne
     @JoinColumn(name = "sport_id", nullable = false)
     private Sport sport;

@@ -43,6 +43,12 @@ public class DisabledFacility {
     @Column(name = "is_accessible_for_disabled", length = 1)
     private String isAccessibleForDisabled;
 
+    @Column(name = "road_addr", length = 200)
+    private String roadAddr;
+
+    @Column(name = "faci_daddr", length = 200)
+    private String faciDaddr;
+
     @ManyToOne
     @JoinColumn(name = "city_id", foreignKey = @ForeignKey(name = "fk_disabled_facility_city"))
     private City city;

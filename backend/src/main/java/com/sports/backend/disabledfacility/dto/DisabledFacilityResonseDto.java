@@ -14,4 +14,6 @@ public class DisabledFacilityResonseDto {
     private String cityName;
     private String districtCode;
     private String districtName;
+    private String roadAddr;
+    private String faciDaddr;
 }

@@ -37,6 +37,12 @@ public class CourseService {
                             .description(course.getCourseSetaDesc())
                             .fee(course.getSettlAmt())
                             .isAccessibleForDisabled("Y")
+                            .cityName(course.getCityName())          // 도시 이름
+                            .districtName(course.getDistrictName())  // 구 이름
+                            .roadAddr(course.getRoadAddr())          // 도로명 주소
+                            .faciDaddr(course.getFaciDaddr())        // 상세 주소
+                            .latitude(course.getLatitude())          // 위도
+                            .longitude(course.getLongitude())        // 경도
                             .build())
                     .collect(Collectors.toList());
 
@@ -53,6 +59,12 @@ public class CourseService {
                             .description(course.getCourseSetaDesc())
                             .fee(null)
                             .isAccessibleForDisabled("N")
+                            .cityName(course.getCityName())          // 도시 이름
+                            .districtName(course.getDistrictName())  // 구 이름
+                            .roadAddr(course.getRoadAddr())          // 도로명 주소
+                            .faciDaddr(course.getFaciDaddr())        // 상세 주소
+                            .latitude(course.getLatitude())          // 위도
+                            .longitude(course.getLongitude())        // 경도
                             .build())
                     .collect(Collectors.toList());
 

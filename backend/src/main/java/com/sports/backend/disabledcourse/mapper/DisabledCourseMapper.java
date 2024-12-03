@@ -19,6 +19,12 @@ public class DisabledCourseMapper {
                 .weekday(dto.getWeekday())
                 .courseSetaDesc(dto.getCourseSetaDesc())
                 .settlAmt(dto.getSettlAmt())
+                .roadAddr(dto.getRoadAddr())
+                .faciDaddr(dto.getFaciDaddr())
+                .districtName(dto.getDistrictName())
+                .cityName(dto.getCityName())
+                .latitude(dto.getLatitude())
+                .longitude(dto.getLongitude())
                 .build();
     }
 
@@ -35,6 +41,12 @@ public class DisabledCourseMapper {
                 .weekday(entity.getWeekday())
                 .courseSetaDesc(entity.getCourseSetaDesc())
                 .settlAmt(entity.getSettlAmt())
+                .roadAddr(entity.getRoadAddr())
+                .faciDaddr(entity.getFaciDaddr())
+                .districtName(entity.getDistrictName())
+                .cityName(entity.getCityName())
+                .latitude(entity.getLatitude())
+                .longitude(entity.getLongitude())
                 .build();
     }
 }

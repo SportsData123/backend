@@ -2,6 +2,8 @@ package com.sports.backend.facility.service;
 
 import com.sports.backend.city.dao.CityRepository;
 import com.sports.backend.city.domain.City;
+import com.sports.backend.course.dto.CourseResponseDto;
+import com.sports.backend.disabledcourse.dao.DisabledCourseRepository;
 import com.sports.backend.disabledfacility.dao.DisabledFacilityRepository;
 import com.sports.backend.disabledfacility.domain.DisabledFacility;
 import com.sports.backend.district.dao.DistrictRepository;
@@ -10,6 +12,7 @@ import com.sports.backend.facility.dao.FacilityRepository;
 import com.sports.backend.facility.domain.Facility;
 import com.sports.backend.facility.dto.FacilityDto;
 import com.sports.backend.facility.dto.FacilityResponseDto;
+import com.sports.backend.generalcourse.dao.GeneralCourseRepository;
 import com.sports.backend.generalfacility.dao.GeneralFacilityRepository;
 import com.sports.backend.generalfacility.domain.GeneralFacility;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
@@ -34,6 +38,8 @@ public class FacilityService {
     private final CityRepository cityRepository;
     private final DistrictRepository districtRepository;
     private final FacilityApiClient facilityApiClient;
+    private final DisabledCourseRepository disabledCourseRepository;
+    private final GeneralCourseRepository generalCourseRepository;
 
     private boolean isFacilityDataLoaded() {
         long count = facilityRepository.count();
@@ -104,63 +110,17 @@ public class FacilityService {
     public List<FacilityResponseDto> getFacilities(String cityId, String districtId, String isAccessibleForDisabled, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
 
-        // Facility 데이터 조회
-        List<Facility> facilities = facilityRepository.findAllWithFilters(
-                cityId,
-                districtId,
-                isAccessibleForDisabled,
-                pageable
-        );
+        // Facility 데이터 조회 (general과 disabled 포함)
+        List<Facility> facilities = facilityRepository.findAllWithFilters(cityId, districtId, isAccessibleForDisabled, pageable);
 
-        // GeneralFacility 데이터 조회
-        List<GeneralFacility> generalFacilities = generalFacilityRepository.findWithFilters(
-                cityId,
-                districtId,
-                isAccessibleForDisabled,
-                pageable
-        );
-
-        // DisabledFacility 데이터 조회
-        List<DisabledFacility> disabledFacilities = disabledFacilityRepository.findWithFilters(
-                cityId,
-                districtId,
-                isAccessibleForDisabled,
-                pageable
-        );
-
-        // 통합 결과 반환
-        return combineResults(facilities, generalFacilities, disabledFacilities);
-    }
-
-    private List<FacilityResponseDto> combineResults(
-            List<Facility> facilities,
-            List<GeneralFacility> generalFacilities,
-            List<DisabledFacility> disabledFacilities) {
-
-        Set<String> uniqueKeys = new HashSet<>(); // 중복 제거를 위한 Set
-        return Stream.of(
-                        facilities.stream()
-                                .flatMap(facility -> facility.getDisabledFacility().stream()
-                                        .map(disabledFacility -> mapToResponseDto(facility, facility.getGeneralFacility(), disabledFacility))), // Facility와 DisabledFacility 연결된 경우
-                        generalFacilities.stream()
-                                .map(gf -> mapToResponseDto(gf.getFacility(), gf, null)), // GeneralFacility 데이터
-                        disabledFacilities.stream()
-                                .map(df -> mapToResponseDto(
-                                        df.getFacility(),
-                                        Optional.ofNullable(df.getFacility())
-                                                .map(Facility::getGeneralFacility)
-                                                .orElse(null),
-                                        df))
-                ).flatMap(stream -> stream)
-                .filter(dto -> uniqueKeys.add(generateUniqueKey(dto)))
+        // 중복 제거 및 결과 통합
+        return facilities.stream()
+                .map(facility -> mapToResponseDto(
+                        facility,
+                        facility.getGeneralFacility(),
+                        facility.getDisabledFacility().isEmpty() ? null : facility.getDisabledFacility().get(0)))
+                .distinct()
                 .toList();
-    }
-
-    private String generateUniqueKey(FacilityResponseDto dto) {
-        return String.join("_",
-                Optional.ofNullable(dto.getFacilityName()).orElse(""),
-                Optional.ofNullable(dto.getCityName()).orElse(""),
-                Optional.ofNullable(dto.getDistrictName()).orElse(""));
     }
 
 
@@ -201,7 +161,41 @@ public class FacilityService {
                 .disabledMainEventName(disabledFacility != null ? disabledFacility.getMainEventName() : null)
                 .isAccessibleForDisabled(facility != null ? facility.getIsAccessibleForDisabled() :
                         (disabledFacility != null ? "Y" : null))
+
+                .courses(getCoursesByFacility(facility.getFacilityId()))
                 .build();
+    }
+
+    private List<CourseResponseDto> getCoursesByFacility(int facilityId) {
+        // 장애인 강좌
+        List<CourseResponseDto> disabledCourses = disabledCourseRepository.findByFacilityId(facilityId).stream()
+                .map(course -> CourseResponseDto.builder()
+                        .courseId(course.getDisabledCourseId())
+                        .courseName(course.getCourseNm())
+                        .startTime(course.getStartTime())
+                        .endTime(course.getEndTime())
+                        .weekday(course.getWeekday())
+                        .description(course.getCourseSetaDesc())
+                        .isAccessibleForDisabled("Y")
+                        .build())
+                .collect(Collectors.toList());
+
+        // 일반 강좌
+        List<CourseResponseDto> generalCourses = generalCourseRepository.findByFacilityId(facilityId).stream()
+                .map(course -> CourseResponseDto.builder()
+                        .courseId(course.getGeneralCourseId())
+                        .courseName(course.getCourseNm())
+                        .startTime(course.getStartTime())
+                        .endTime(course.getEndTime())
+                        .weekday(course.getWeekday())
+                        .description(course.getCourseSetaDesc())
+                        .isAccessibleForDisabled("N")
+                        .build())
+                .collect(Collectors.toList());
+
+        // 강좌 데이터 합치기
+        disabledCourses.addAll(generalCourses);
+        return disabledCourses;
     }
 
     @Transactional(readOnly = true)

@@ -68,6 +68,8 @@ public class GeneralFacilityService {
                 .districtName(dto.getDistrictName())
                 .brno(dto.getBrno())
                 .facilSn(dto.getFacilSn())
+                .roadAddr(dto.getRoadAddr())
+                .faciDaddr(dto.getFaciDaddr())
                 .build();
     }
 }

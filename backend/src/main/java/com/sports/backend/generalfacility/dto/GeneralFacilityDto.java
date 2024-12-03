@@ -15,4 +15,6 @@ public class GeneralFacilityDto {
     private String districtName;
     private String brno;
     private String facilSn;
+    private String roadAddr;
+    private String faciDaddr;
 }

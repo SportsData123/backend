@@ -1,5 +1,6 @@
 package com.sports.backend.generalcourse.domain;
 
+import com.sports.backend.facility.domain.Facility;
 import com.sports.backend.sport.domain.Sport;
 import jakarta.persistence.*;
 import lombok.*;
@@ -48,6 +49,27 @@ public class GeneralCourse {
 
     @Column (name = "settl_amt")
     private String settlAmt;
+
+    @Column(name = "road_addr", length = 255)
+    private String roadAddr;
+
+    @Column(name = "faci_daddr", length = 255)
+    private String faciDaddr;
+
+    @Column(name = "district_name", length = 50)
+    private String districtName;
+
+    @Column(name = "city_name", length = 10)
+    private String cityName;
+
+    @Column(name = "latitude", precision = 9)
+    private Double latitude;
+
+    @Column(name = "longitude", precision = 9)
+    private Double longitude;
+
+    @Column(name = "facility_id")
+    private Integer facilityId;
 
     //@ManyToOne
     //@JoinColumn(name = "sport_id", nullable = false)

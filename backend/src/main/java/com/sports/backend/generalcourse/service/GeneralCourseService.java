@@ -68,6 +68,12 @@ public class GeneralCourseService {
                 .courseSetaDesc(dto.getCourseSetaDesc())
                 .facilSn(dto.getFacilSn())
                 .settlAmt(dto.getSettlAmt())
+                .roadAddr(dto.getRoadAddr())
+                .faciDaddr(dto.getFaciDaddr())
+                .districtName(dto.getDistrictName())
+                .cityName(dto.getCityName())
+                .latitude(dto.getLatitude())
+                .longitude(dto.getLongitude())
                 .build();
     }
 }

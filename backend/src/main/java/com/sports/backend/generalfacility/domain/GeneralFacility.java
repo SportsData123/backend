@@ -49,6 +49,12 @@ public class GeneralFacility {
     @Column(name = "is_accessible_for_disabled", length = 1)
     private String isAccessibleForDisabled;
 
+    @Column(name = "road_addr", length = 255)
+    private String roadAddr;
+
+    @Column(name = "faci_daddr", length = 255)
+    private String faciDaddr;
+
     @ManyToOne // City와 관계 설정
     @JoinColumn(name = "city_id", foreignKey = @ForeignKey(name = "fk_general_facility_city"))
     private City city; // City 엔터티와 연결

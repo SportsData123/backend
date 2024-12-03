@@ -20,4 +20,10 @@ public class CourseResponseDto {
     private String description;  // 상세 설명
     private String fee;          // 요금 (disabled_course에만 있음)
     private String isAccessibleForDisabled;
+    private String cityName;      // 도시 이름
+    private String districtName;  // 구 이름
+    private String roadAddr;      // 도로명 주소
+    private String faciDaddr;     // 상세 주소
+    private Double latitude;      // 위도
+    private Double longitude;     // 경도
 }

@@ -17,4 +17,10 @@ public class DisabledCourseResponseDto {
     private String weekday;
     private String courseSetaDesc;
     private String settlAmt;
+    private String roadAddr;
+    private String faciDaddr;
+    private String districtName;
+    private String cityName;
+    private Double latitude;
+    private Double longitude;
 }

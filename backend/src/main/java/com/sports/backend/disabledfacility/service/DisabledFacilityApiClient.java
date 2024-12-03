@@ -99,6 +99,8 @@ public class DisabledFacilityApiClient {
                 .cityName((String) item.get("city_nm"))
                 .districtCode((String) item.get("dist_cd"))
                 .districtName((String) item.get("local_nm"))
+                .roadAddr((String) item.get("road_addr"))
+                .faciDaddr((String) item.get("faci_daddr"))
                 .build();
     }
 }

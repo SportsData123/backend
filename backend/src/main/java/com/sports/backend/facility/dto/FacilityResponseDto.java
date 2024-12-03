@@ -1,9 +1,12 @@
 package com.sports.backend.facility.dto;
 
+import com.sports.backend.course.dto.CourseResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -36,4 +39,6 @@ public class FacilityResponseDto {
     private String disabledResTelno;
     private String disabledMainEventName;
     private String isAccessibleForDisabled;
+
+    private List<CourseResponseDto> courses;
 }

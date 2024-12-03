@@ -102,6 +102,8 @@ public class GeneralFacilityApiClient {
                 .districtName((String) item.get("local_nm"))
                 .brno((String) item.get("brno"))
                 .facilSn((String) item.get("facil_sn"))
+                .roadAddr((String) item.get("road_addr"))
+                .faciDaddr((String) item.get("faci_daddr"))
                 .build();
     }
 }
