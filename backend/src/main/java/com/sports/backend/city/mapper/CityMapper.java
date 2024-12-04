@@ -26,8 +26,8 @@ public class CityMapper {
      */
     public static City fromCsvRecord(String[] record) {
         String cityCode = record[0].substring(0, 2);        // 법정동코드 (왼쪽 2자리)
-        String cityName = record[1].split(" ")[0];         // 법정동명 (첫 단어)
-        String exist = record[2];                          // 폐지여부
+        String cityName = record[1].split(" ")[0];    // 법정동명 (첫 단어)
+        String exist = record[2];                           // 폐지여부
 
         if ("존재".equals(exist)) {
             return City.builder()
