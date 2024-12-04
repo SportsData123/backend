@@ -12,6 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CityDto {
+
     @CsvBindByName(column = "법정동코드")
     private String cityCode;
 
@@ -29,4 +30,5 @@ public class CityDto {
                 ", 존재여부='" + exist + '\'' +
                 '}';
     }
+
 }

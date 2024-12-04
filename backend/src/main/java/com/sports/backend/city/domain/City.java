@@ -19,6 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class City {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "city_id")
@@ -38,4 +39,5 @@ public class City {
      */
     @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
     private List<District> districts; // 도시와 연결된 지역 목록
+
 }

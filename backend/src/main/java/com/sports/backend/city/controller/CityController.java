@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/cities")
 public class CityController {
+
     private final CityService cityService;
 
     // CityService를 DI(의존성 주입)하여 초기화합니다.

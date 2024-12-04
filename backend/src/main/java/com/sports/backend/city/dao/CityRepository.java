@@ -13,6 +13,7 @@ import java.util.Optional;
 
 @Repository
 public interface CityRepository extends JpaRepository<City, Integer> {
+
     /**
      * 특정 도시 이름이 데이터베이스에 존재하는지 확인합니다.
      *
