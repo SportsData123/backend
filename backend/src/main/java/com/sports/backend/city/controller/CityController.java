@@ -32,12 +32,8 @@ public class CityController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<CityResponseDto>>> getCities() {
-        try {
-            List<CityResponseDto> cities = cityService.getCityList();
-            return ResponseEntity.ok(new ApiResponse<>(200, "도시 목록 조회 성공", cities));
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body(new ApiResponse<>(500, "Failed to import data: " + e.getMessage(), null));
-        }
+        List<CityResponseDto> cities = cityService.getCityList();
+        return ResponseEntity.ok(new ApiResponse<>(200, "도시 목록 조회 성공", cities));
     }
 
 
