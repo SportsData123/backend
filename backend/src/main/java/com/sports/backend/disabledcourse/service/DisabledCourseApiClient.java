@@ -17,12 +17,25 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * `DisabledCourseApiClient`는 외부 API를 호출하여 장애인 강좌 데이터를 가져오는 역할을 합니다.
+ * API 호출 및 데이터 파싱을 수행하며, 결과를 DTO 리스트로 반환합니다.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class DisabledCourseApiClient {
+
     private final RestTemplate restTemplate;
 
+    /**
+     * 장애인 강좌 데이터를 API로부터 가져옵니다.
+     *
+     * @param serviceKey API 인증키
+     * @param pageNo     요청 페이지 번호
+     * @param numOfRows  한 페이지에 가져올 데이터 개수
+     * @return 장애인 강좌 데이터가 담긴 `DisabledCourseDto` 리스트
+     */
     public List<DisabledCourseDto> fetchDisabledCourses(String serviceKey, int pageNo, int numOfRows) {
         try {
             URI uri = makeUri(serviceKey, pageNo, numOfRows);
@@ -81,7 +94,14 @@ public class DisabledCourseApiClient {
         }
     }
 
-    // URI 생성
+    /**
+     * API 호출을 위한 URI를 생성합니다.
+     *
+     * @param serviceKey API 인증키
+     * @param pageNo     요청 페이지 번호
+     * @param numOfRows  한 페이지 결과 개수
+     * @return 생성된 URI 객체
+     */
     private URI makeUri(String serviceKey, int pageNo, int numOfRows) {
         return UriComponentsBuilder.fromHttpUrl("http://apis.data.go.kr/B551014/SRVC_DVOUCHER_FACI_COURSE/TODZ_DVOUCHER_FACI_COURSE")
                 .queryParam("serviceKey", serviceKey)  // 인증키
@@ -92,6 +112,12 @@ public class DisabledCourseApiClient {
                 .toUri();// 자동 인코딩
     }
 
+    /**
+     * JSON 객체를 `DisabledCourseDto`로 매핑합니다.
+     *
+     * @param item JSON 객체
+     * @return 변환된 `DisabledCourseDto` 객체
+     */
     private DisabledCourseDto mapToDisabledCourseDto(JSONObject item) {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 

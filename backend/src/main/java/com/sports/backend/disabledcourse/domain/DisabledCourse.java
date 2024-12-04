@@ -6,6 +6,10 @@ import lombok.*;
 
 import java.time.LocalTime;
 
+/**
+ * DisabledCourse 엔티티는 장애인 강좌 데이터를 나타내는 JPA 엔티티입니다.
+ * 데이터베이스의 `disabled_course` 테이블과 매핑됩니다.
+ */
 @Entity
 @Getter
 @Setter
@@ -14,6 +18,7 @@ import java.time.LocalTime;
 @Builder
 @Table(name = "disabled_course")
 public class DisabledCourse {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "disabled_course_id")
