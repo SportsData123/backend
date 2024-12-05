@@ -6,6 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * `DisabledFacilityController`는 장애인 시설 데이터를 관리하는 API를 제공합니다.
+ * 외부 데이터를 가져와 데이터베이스에 저장하는 기능을 포함합니다.
+ */
 @RestController
 @RequestMapping("/api/disabled-facilities")
 @RequiredArgsConstructor
