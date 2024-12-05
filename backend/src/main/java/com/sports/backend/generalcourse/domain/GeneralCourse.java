@@ -1,12 +1,14 @@
 package com.sports.backend.generalcourse.domain;
 
-import com.sports.backend.facility.domain.Facility;
-import com.sports.backend.sport.domain.Sport;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalTime;
 
+/**
+ * `GeneralCourse`는 일반 강좌 데이터를 나타내는 엔티티 클래스입니다.
+ * 데이터베이스 테이블 `general_course`와 매핑되며, 일반 강좌와 관련된 정보를 저장합니다.
+ */
 @Entity
 @Getter
 @Setter
@@ -71,7 +73,4 @@ public class GeneralCourse {
     @Column(name = "facility_id")
     private Integer facilityId;
 
-    //@ManyToOne
-    //@JoinColumn(name = "sport_id", nullable = false)
-    //private Sport sport;
 }
