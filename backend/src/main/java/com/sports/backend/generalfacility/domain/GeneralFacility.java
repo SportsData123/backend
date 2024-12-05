@@ -6,6 +6,10 @@ import com.sports.backend.facility.domain.Facility;
 import jakarta.persistence.*;
 import lombok.*;
 
+/**
+ * `GeneralFacility`는 일반 시설 데이터를 나타내는 엔터티 클래스입니다.
+ * 데이터베이스 테이블 `general_facility`와 매핑되며, 일반 시설의 속성과 관련된 정보를 포함합니다.
+ */
 @Entity
 @Getter
 @Setter
@@ -55,14 +59,26 @@ public class GeneralFacility {
     @Column(name = "faci_daddr", length = 255)
     private String faciDaddr;
 
-    @ManyToOne // City와 관계 설정
+    /**
+     * 도시와의 관계
+     * `City` 엔터티와 다대일 관계를 설정하며 외래 키는 `city_id`입니다.
+     */
+    @ManyToOne
     @JoinColumn(name = "city_id", foreignKey = @ForeignKey(name = "fk_general_facility_city"))
-    private City city; // City 엔터티와 연결
+    private City city;
 
+    /**
+     * 구와의 관계
+     * `District` 엔터티와 다대일 관계를 설정하며 외래 키는 `district_id`입니다.
+     */
     @ManyToOne
     @JoinColumn(name = "district_id", foreignKey = @ForeignKey(name = "fk_general_facility_district"))
     private District district;
 
+    /**
+     * 시설과의 관계
+     * `Facility` 엔터티와 일대일 관계를 설정하며 외래 키는 `facility_id`입니다.
+     */
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facility_id", referencedColumnName = "facility_id")
     private Facility facility;
