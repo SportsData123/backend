@@ -1,5 +1,6 @@
 package com.sports.backend.disabledcourse.service;
 
+import com.sports.backend.common.BaseApiClient;
 import com.sports.backend.disabledcourse.dto.DisabledCourseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,76 +23,11 @@ import java.util.List;
  * API 호출 및 데이터 파싱을 수행하며, 결과를 DTO 리스트로 반환합니다.
  */
 @Service
-@RequiredArgsConstructor
 @Slf4j
-public class DisabledCourseApiClient {
+public class DisabledCourseApiClient extends BaseApiClient<DisabledCourseDto> {
 
-    private final RestTemplate restTemplate;
-
-    /**
-     * 장애인 강좌 데이터를 API로부터 가져옵니다.
-     *
-     * @param serviceKey API 인증키
-     * @param pageNo     요청 페이지 번호
-     * @param numOfRows  한 페이지에 가져올 데이터 개수
-     * @return 장애인 강좌 데이터가 담긴 `DisabledCourseDto` 리스트
-     */
-    public List<DisabledCourseDto> fetchDisabledCourses(String serviceKey, int pageNo, int numOfRows) {
-        try {
-            URI uri = makeUri(serviceKey, pageNo, numOfRows);
-            log.info("API 호출 URI: {}", uri);
-
-            String jsonString = restTemplate.getForObject(uri, String.class);
-
-            JSONParser jsonParser = new JSONParser();
-            JSONObject jsonObject = (JSONObject) jsonParser.parse(jsonString);
-
-            // "response" 객체 가져오기
-            JSONObject jsonResponse = (JSONObject) jsonObject.get("response");
-            if (jsonResponse == null) {
-                log.error("JSON에 'response' 키가 없습니다.");
-                return new ArrayList<>();
-            }
-
-            // "body" 객체 가져오기
-            JSONObject jsonBody = (JSONObject) jsonResponse.get("body");
-            if (jsonBody == null) {
-                log.error("JSON에 'body' 키가 없습니다.");
-                return new ArrayList<>();
-            }
-
-            // "items" 객체 가져오기
-            JSONObject jsonItems = (JSONObject) jsonBody.get("items");
-            if (jsonItems == null) {
-                log.error("JSON에 'items' 키가 없습니다.");
-                return new ArrayList<>();
-            }
-
-            // "item" 배열 가져오기
-            JSONArray jsonItemList = (JSONArray) jsonItems.get("item");
-            if (jsonItemList == null) {
-                log.error("JSON에 'item' 키가 없습니다.");
-                return new ArrayList<>();
-            }
-
-            // DTO 리스트로 변환
-            List<DisabledCourseDto> result = new ArrayList<>();
-            for (Object o : jsonItemList) {
-                JSONObject item = (JSONObject) o;
-                DisabledCourseDto dto = mapToDisabledCourseDto(item);
-                if (dto != null) { // null 객체 제외
-                    result.add(dto);
-                }
-            }
-            return result;
-
-        } catch (ParseException e) {
-            log.error("JSON 파싱 실패: {}", e.getMessage());
-            return new ArrayList<>();
-        } catch (Exception e) {
-            log.error("API 호출 실패: {}", e.getMessage());
-            return new ArrayList<>();
-        }
+    public DisabledCourseApiClient(RestTemplate restTemplate) {
+        super(restTemplate);
     }
 
     /**
@@ -102,7 +38,8 @@ public class DisabledCourseApiClient {
      * @param numOfRows  한 페이지 결과 개수
      * @return 생성된 URI 객체
      */
-    private URI makeUri(String serviceKey, int pageNo, int numOfRows) {
+    @Override
+    protected  URI makeUri(String serviceKey, int pageNo, int numOfRows) {
         return UriComponentsBuilder.fromHttpUrl("http://apis.data.go.kr/B551014/SRVC_DVOUCHER_FACI_COURSE/TODZ_DVOUCHER_FACI_COURSE")
                 .queryParam("serviceKey", serviceKey)  // 인증키
                 .queryParam("pageNo", pageNo)          // 페이지 번호
@@ -118,7 +55,8 @@ public class DisabledCourseApiClient {
      * @param item JSON 객체
      * @return 변환된 `DisabledCourseDto` 객체
      */
-    private DisabledCourseDto mapToDisabledCourseDto(JSONObject item) {
+    @Override
+    protected DisabledCourseDto mapToDto(JSONObject item) {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
 

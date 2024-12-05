@@ -53,7 +53,7 @@ public class DisabledCourseService {
 
         do {
             // 한 페이지의 데이터를 가져옴
-            List<DisabledCourseDto> disabledCourses = disabledCourseApiClient.fetchDisabledCourses(serviceKey, pageNo, numOfRows);
+            List<DisabledCourseDto> disabledCourses = disabledCourseApiClient.fetchData(serviceKey, pageNo, numOfRows);
 
             if (disabledCourses.isEmpty()) {
                 log.warn("API에서 더 이상 가져올 데이터가 없습니다.");
