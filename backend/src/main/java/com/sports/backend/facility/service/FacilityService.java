@@ -25,7 +25,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +32,6 @@ import java.util.stream.Stream;
 @Slf4j
 public class FacilityService {
     private final FacilityRepository facilityRepository;
-    private final GeneralFacilityRepository generalFacilityRepository;
-    private final DisabledFacilityRepository disabledFacilityRepository;
     private final CityRepository cityRepository;
     private final DistrictRepository districtRepository;
     private final FacilityApiClient facilityApiClient;
