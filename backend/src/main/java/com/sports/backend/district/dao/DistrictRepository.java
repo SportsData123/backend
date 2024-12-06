@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface DistrictRepository extends JpaRepository<District, Integer> {
     List<District> findByCity_CityId(int cityId);
+
+    District findByDistrictNameAndCity_CityId(String districtName, int cityId);
 }
