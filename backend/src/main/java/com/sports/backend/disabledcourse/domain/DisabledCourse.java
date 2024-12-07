@@ -84,7 +84,7 @@ public class DisabledCourse {
     @Column(name = "facility_id")
     private Integer facilityId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sport_id", nullable = false)
     private Sport sport;
 }

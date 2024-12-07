@@ -108,7 +108,7 @@ public class FacilityService {
         Pageable pageable = PageRequest.of(page - 1, size);
 
         // Facility 데이터 조회 (general과 disabled 포함)
-        List<Facility> facilities = facilityRepository.findAllWithFilters(cityId, districtId, isAccessibleForDisabled, pageable);
+        Page<Facility> facilities = facilityRepository.findAllWithFilters(cityId, districtId, isAccessibleForDisabled, pageable);
 
         // 중복 제거 및 결과 통합
         return facilities.stream()

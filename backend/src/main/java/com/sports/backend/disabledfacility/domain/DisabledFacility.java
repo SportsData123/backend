@@ -58,7 +58,7 @@ public class DisabledFacility {
      * - 참조: `City` 엔티티
      * - 외래 키 이름: `fk_disabled_facility_city`
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", foreignKey = @ForeignKey(name = "fk_disabled_facility_city"))
     private City city;
 
@@ -67,7 +67,7 @@ public class DisabledFacility {
      * - 참조: `District` 엔티티
      * - 외래 키 이름: `fk_disabled_facility_district`
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "district_id", foreignKey = @ForeignKey(name = "fk_disabled_facility_district"))
     private District district;
 

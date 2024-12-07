@@ -63,7 +63,7 @@ public class GeneralFacility {
      * 도시와의 관계
      * `City` 엔터티와 다대일 관계를 설정하며 외래 키는 `city_id`입니다.
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", foreignKey = @ForeignKey(name = "fk_general_facility_city"))
     private City city;
 
@@ -71,7 +71,7 @@ public class GeneralFacility {
      * 구와의 관계
      * `District` 엔터티와 다대일 관계를 설정하며 외래 키는 `district_id`입니다.
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "district_id", foreignKey = @ForeignKey(name = "fk_general_facility_district"))
     private District district;
 

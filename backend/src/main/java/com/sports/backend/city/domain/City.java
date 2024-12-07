@@ -37,7 +37,7 @@ public class City {
      * - District의 "city" 필드와 매핑됨.
      * - CascadeType.ALL 설정으로 City와 관련된 District에 대해 일괄 처리 가능.
      */
-    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<District> districts; // 도시와 연결된 지역 목록
 
 }
