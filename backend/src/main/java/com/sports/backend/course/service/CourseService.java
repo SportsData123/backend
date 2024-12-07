@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,30 +47,37 @@ public class CourseService {
                                                     String weekday, String sportName, String startTime, String endTime) {
         {
             Pageable pageable = PageRequest.of(page, size);
+            List<CourseResponseDto> result = new ArrayList<>();
+            int totalElements = 0;
+            int currentPage = page;
 
-            // 강좌 데이터 필터링 및 페이징
-            Page<Course> coursePage = courseRepository.findFiltered(
-                    isAccessibleForDisabled,
-                    weekday,
-                    sportName,
-                    startTime != null ? LocalTime.parse(startTime) : null,
-                    endTime != null ? LocalTime.parse(endTime) : null,
-                    pageable
-            );
+            while (result.size() < size) {
+                Page<Course> coursePage = courseRepository.findFiltered(
+                        isAccessibleForDisabled,
+                        weekday,
+                        sportName,
+                        startTime != null ? LocalTime.parse(startTime) : null,
+                        endTime != null ? LocalTime.parse(endTime) : null,
+                        pageable
+                );
 
-            // 엔티티를 DTO로 변환
-            List<CourseResponseDto> courses = coursePage.getContent().stream()
-                    .map(CourseMapper::toDto)
-                    .toList();
+                result.addAll(coursePage.getContent().stream()
+                        .map(CourseMapper::toDto)
+                        .toList());
 
+                if (!coursePage.hasNext()) break; // 더 이상 페이지가 없으면 종료
+
+                currentPage++;
+                pageable = PageRequest.of(currentPage, size);
+            }
 
             // 페이징 정보 포함 응답 생성
             return PaginatedCourseResponseDto.builder()
-                    .totalCount(coursePage.getTotalElements()) // 총 강좌 수
-                    .page(page + 1)                            // 0-based에서 1-based로 변환
-                    .size(size)                                // 페이지 크기
-                    .totalPages(coursePage.getTotalPages())    // 총 페이지 수
-                    .courses(courses)                         // 현재 페이지의 강좌 데이터
+                    .totalCount(totalElements)
+                    .page(page + 1) // 요청 페이지 0-based에서 1-based로 변환
+                    .size(size)
+                    .totalPages((totalElements + size - 1) / size) // 총 페이지 계산
+                    .courses(result)
                     .build();
         }
     }

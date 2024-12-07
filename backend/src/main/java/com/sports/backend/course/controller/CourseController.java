@@ -42,6 +42,10 @@ public class CourseController {
             @RequestParam(required = false) String endTime,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "10") int size) {
+
+        System.out.println("isAccessibleForDisabled: " + isAccessibleForDisabled);
+
+
         // 페이지 번호가 1 이상이어야 하므로 1 미만인 경우 0으로 설정
         int pageNumber = page > 0 ? page - 1 : 0;
 
