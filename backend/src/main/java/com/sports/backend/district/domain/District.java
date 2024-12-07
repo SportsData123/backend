@@ -26,7 +26,7 @@ public class District {
     @Column(name = "city_code", nullable = false, length = 2)
     private String cityCode;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id", nullable = false)
     private City city; // 연결된 도시
 }
