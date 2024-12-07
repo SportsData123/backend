@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * CourseService는 강좌 데이터를 처리하는 서비스 클래스입니다.
@@ -46,28 +47,23 @@ public class CourseService {
     public PaginatedCourseResponseDto getAllCourses(int page, int size, String isAccessibleForDisabled,
                                                     String weekday, String sportName, String startTime, String endTime) {
         {
-            List<CourseResponseDto> disabledCourses = disabledCourseRepository.findAll().stream()
-                    .map(CourseMapper::toDto)
-                    .collect(Collectors.toList());
+            List<CourseResponseDto> disabledCourses = disabledCourseRepository.findFiltered(
+                    weekday,
+                    sportName,
+                    startTime != null ? LocalTime.parse(startTime) : null,
+                    endTime != null ? LocalTime.parse(endTime) : null
+            ).stream().map(CourseMapper::toDto).collect(Collectors.toList());
 
-            // 일반 강좌 데이터를 DTO로 변환
-            List<CourseResponseDto> generalCourses = generalCourseRepository.findAll().stream()
-                    .map(CourseMapper::toDto)
-                    .collect(Collectors.toList());
+            // 필터링된 일반 강좌 및 장애인 강좌 데이터 조회
+            List<CourseResponseDto> generalCourses = generalCourseRepository.findFiltered(
+                    weekday,
+                    sportName,
+                    startTime != null ? LocalTime.parse(startTime) : null,
+                    endTime != null ? LocalTime.parse(endTime) : null
+            ).stream().map(CourseMapper::toDto).collect(Collectors.toList());
 
             // 두 데이터를 합쳐 반환
-            List<CourseResponseDto> combinedCourses = disabledCourses;
-            combinedCourses.addAll(generalCourses);
-
-            // 필터 조건 적용
-            combinedCourses = combinedCourses.stream()
-                    .filter(course -> (isAccessibleForDisabled == null || course.getIsAccessibleForDisabled().equals(isAccessibleForDisabled)))
-                    .filter(course -> weekday == null || matchesWeekday(weekday, course.getWeekday()))
-                    .filter(course -> (sportName == null || course.getSportName().equalsIgnoreCase(sportName)))
-                    .filter(course -> (startTime == null ||
-                            (course.getStartTime() != null && course.getStartTime().compareTo(LocalTime.parse(startTime)) >= 0)))
-                    .filter(course -> (endTime == null ||
-                            (course.getEndTime() != null && course.getEndTime().compareTo(LocalTime.parse(endTime)) <= 0)))
+            List<CourseResponseDto> combinedCourses = Stream.concat(generalCourses.stream(), disabledCourses.stream())
                     .distinct()
                     .collect(Collectors.toList());
 
@@ -87,29 +83,4 @@ public class CourseService {
                     .build();
         }
     }
-
-    /**
-     * 사용자 입력 요일과 강좌 요일의 조건을 비교합니다.
-     *
-     * @param inputWeekday 사용자가 입력한 요일 조건 (예: "1010100")
-     * @param courseWeekday 강좌가 진행되는 요일 (예: "1111100")
-     * @return boolean 조건에 부합하면 true, 아니면 false
-     */
-    private boolean matchesWeekday(String inputWeekday, String courseWeekday) {
-        if (courseWeekday == null) {
-            return false; // 강좌 요일 정보가 없으면 조건 불충족
-        }
-
-        for (int i = 0; i < inputWeekday.length(); i++) {
-            char inputChar = inputWeekday.charAt(i);
-            char courseChar = courseWeekday.charAt(i);
-
-            // 사용자가 원하는 요일 (1인 경우)에 강좌 요일도 1이어야 함
-            if (inputChar == '1' && courseChar != '1') {
-                return false; // 조건 불충족
-            }
-        }
-        return true; // 모든 조건 만족
-    }
-
 }

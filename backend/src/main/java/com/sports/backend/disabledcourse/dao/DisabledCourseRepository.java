@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -21,5 +22,20 @@ public interface DisabledCourseRepository extends JpaRepository<DisabledCourse, 
      */
     @Query("SELECT dc FROM DisabledCourse dc WHERE dc.facilityId = :facilityId")
     List<DisabledCourse> findByFacilityId(@Param("facilityId") int facilityId);
+
+
+
+    @Query("SELECT d FROM DisabledCourse d " +
+            "WHERE (:weekday IS NULL OR FUNCTION('matchesWeekday', d.weekday, :weekday) = true) " +
+            "AND (:sportName IS NULL OR LOWER(d.sportNm) = LOWER(:sportName)) " +
+            "AND (:startTime IS NULL OR d.startTime >= :startTime) " +
+            "AND (:endTime IS NULL OR d.endTime <= :endTime)")
+    List<DisabledCourse> findFiltered(
+            @Param("weekday") String weekday,
+            @Param("sportName") String sportName,
+            @Param("startTime") LocalTime startTime,
+            @Param("endTime") LocalTime endTime
+    );
+
 
 }
