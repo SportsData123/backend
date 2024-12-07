@@ -15,6 +15,7 @@ public class CourseMapper {
      */
     public static CourseResponseDto toDto(Course course) {
         return CourseResponseDto.builder()
+                .courseId(course.getCourseId())
                 .busiRegNo(course.getBusiRegNo())              // 사업자 등록번호
                 .sportName(course.getSport().getSportName())               // 종목명
                 .courseName(course.getCourseName())             // 강좌명
@@ -23,7 +24,7 @@ public class CourseMapper {
                 .weekday(course.getWeekday())                 // 요일
                 .description(course.getCourseSetaDesc())      // 상세 설명
                 .fee(course.getSettlAmt())                    // 요금
-                .isAccessibleForDisabled("Y")                 // 장애인 접근 가능 여부
+                .isAccessibleForDisabled(course.getIsAccessibleForDisabled())                 // 장애인 접근 가능 여부
                 .cityName(course.getCityName())               // 도시 이름
                 .districtName(course.getDistrictName())       // 구 이름
                 .roadAddr(course.getRoadAddr())               // 도로명 주소

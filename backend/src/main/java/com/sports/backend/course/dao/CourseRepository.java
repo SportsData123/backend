@@ -14,12 +14,13 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     List<Course> findByFacilityId(int facilityId);
 
     @Query("SELECT c FROM Course c " +
-            "WHERE (:isAccessibleForDisabled IS NULL OR c.isAccessibleForDisabled = :isAccessibleForDisabled) " +
-            "AND (:weekday IS NULL OR c.weekday LIKE %:weekday%) " +
+            "WHERE (:isAccessibleForDisabled IS NULL OR " +
+            "       (UPPER(:isAccessibleForDisabled) = 'Y' AND c.isAccessibleForDisabled = 'Y') OR " +
+            "       (UPPER(:isAccessibleForDisabled) = 'N' AND c.isAccessibleForDisabled = 'N')) " +           "AND (:weekday IS NULL OR c.weekday LIKE %:weekday%) " +
             "AND (:sportName IS NULL OR c.sport.sportName = :sportName) " +
             "AND (:startTime IS NULL OR c.startTime >= :startTime) " +
             "AND (:endTime IS NULL OR c.endTime <= :endTime)")
-    Page<Course> findFiltered(@Param("isAccessibleForDisabled") Boolean isAccessibleForDisabled,
+    Page<Course> findFiltered(@Param("isAccessibleForDisabled") String isAccessibleForDisabled,
                               @Param("weekday") String weekday,
                               @Param("sportName") String sportName,
                               @Param("startTime") LocalTime startTime,

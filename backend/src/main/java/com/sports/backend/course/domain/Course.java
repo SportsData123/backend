@@ -61,8 +61,8 @@ public class Course {
     @Column(name = "facil_sn", length = 20)
     private String facilSn; // 시설 고유번호 (GeneralCourse에만 존재)
 
-    @Column(name = "is_accessible_for_disabled")
-    private Boolean isAccessibleForDisabled; // 장애인 접근 가능 여부 (DisabledCourse에만 존재)
+    @Column(name = "is_accessible_for_disabled", length = 1)
+    private String isAccessibleForDisabled; // 장애인 접근 가능 여부 (DisabledCourse에만 존재)
 
     @Column(name = "business_registration_no", length = 20)
     private String busiRegNo; // 사업자 등록번호

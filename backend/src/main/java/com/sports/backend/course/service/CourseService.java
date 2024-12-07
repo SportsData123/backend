@@ -49,7 +49,7 @@ public class CourseService {
 
             // 강좌 데이터 필터링 및 페이징
             Page<Course> coursePage = courseRepository.findFiltered(
-                    isAccessibleForDisabled != null ? Boolean.parseBoolean(isAccessibleForDisabled) : null,
+                    isAccessibleForDisabled,
                     weekday,
                     sportName,
                     startTime != null ? LocalTime.parse(startTime) : null,
