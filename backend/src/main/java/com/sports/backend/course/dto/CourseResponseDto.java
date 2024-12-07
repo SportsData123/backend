@@ -14,20 +14,26 @@ import java.time.LocalTime;
 @Builder
 @AllArgsConstructor
 public class CourseResponseDto {
-    private int courseId;        // 강좌 ID (장애인/일반 강좌를 구분하지 않고 공통적으로 사용)
-    private String busiRegNo;    // 사업자 등록번호
-    private String sportName;    // 종목명
-    private String courseName;   // 강좌명
-    private LocalTime startTime; // 시작 시간
-    private LocalTime endTime;   // 종료 시간
-    private String weekday;      // 요일
-    private String description;  // 상세 설명
-    private String fee;          // 요금
-    private String isAccessibleForDisabled; // 장애인 접근 가능 여부 (Y/N)
-    private String cityName;      // 도시 이름
-    private String districtName;  // 구 이름
-    private String roadAddr;      // 도로명 주소
-    private String faciDaddr;     // 상세 주소
-    private Double latitude;      // 위도
-    private Double longitude;     // 경도
+    private int courseId;
+    private String busiRegNo;
+    private String sportName;
+    private String courseName;
+    private LocalTime startTime;
+    private LocalTime endTime;
+    private String weekday;
+    private String description;
+    private String isAccessibleForDisabled;
+    private String facilSn;
+    private String fee;
+    private String roadAddr;
+    private String faciDaddr;
+    private String districtName;
+    private String districtCode;
+    private Integer districtId;
+    private String cityName;
+    private String cityCode;
+    private Integer cityId;
+    private Double latitude;
+    private Double longitude;
+    private Integer facilityId;
 }

@@ -14,23 +14,31 @@ public class CourseMapper {
      * @return 변환된 CourseResponseDto
      */
     public static CourseResponseDto toDto(Course course) {
+        System.out.println("Mapping Course: " + course);
+
         return CourseResponseDto.builder()
-                .courseId(course.getCourseId())
-                .busiRegNo(course.getBusiRegNo())              // 사업자 등록번호
-                .sportName(course.getSport().getSportName())               // 종목명
-                .courseName(course.getCourseName())             // 강좌명
-                .startTime(course.getStartTime())             // 시작 시간
-                .endTime(course.getEndTime())                 // 종료 시간
-                .weekday(course.getWeekday())                 // 요일
-                .description(course.getCourseSetaDesc())      // 상세 설명
-                .fee(course.getSettlAmt())                    // 요금
-                .isAccessibleForDisabled(course.getIsAccessibleForDisabled())                 // 장애인 접근 가능 여부
-                .cityName(course.getCityName())               // 도시 이름
-                .districtName(course.getDistrictName())       // 구 이름
-                .roadAddr(course.getRoadAddr())               // 도로명 주소
-                .faciDaddr(course.getFaciDaddr())             // 상세 주소
-                .latitude(course.getLatitude())               // 위도
-                .longitude(course.getLongitude())             // 경도
+                .courseId(course.getCourseId())                    // 강좌 ID
+                .busiRegNo(course.getBusiRegNo())                  // 사업자 등록번호
+                .sportName(course.getSportName())                  // 종목명
+                .courseName(course.getCourseName())                // 강좌명
+                .startTime(course.getStartTime())                  // 시작 시간
+                .endTime(course.getEndTime())                      // 종료 시간
+                .weekday(course.getWeekday())                      // 요일
+                .description(course.getCourseDesc())               // 강좌 상세 설명
+                .isAccessibleForDisabled(course.getIsAccessibleForDisabled()) // 장애인 접근 가능 여부
+                .facilSn(course.getFacilSn())                      // 시설 시리얼 넘버
+                .fee(course.getSettlAmt())                         // 결제 금액
+                .roadAddr(course.getRoadAddr())                    // 도로명 주소
+                .faciDaddr(course.getFaciDaddr())                  // 상세 주소
+                .districtName(course.getDistrictName())            // 구 이름
+                .districtCode(course.getDistrictCode())            // 구 코드
+                .districtId(course.getDistrictId())                // 구 ID
+                .cityName(course.getCityName())                    // 도시 이름
+                .cityCode(course.getCityCode())                    // 도시 코드
+                .cityId(course.getCityId())                        // 도시 ID
+                .latitude(course.getLatitude())                    // 위도
+                .longitude(course.getLongitude())                  // 경도
+                .facilityId(course.getFacilityId())                // 시설 ID
                 .build();
     }
 
