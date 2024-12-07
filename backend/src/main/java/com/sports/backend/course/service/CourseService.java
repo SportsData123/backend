@@ -52,7 +52,9 @@ public class CourseService {
                     sportName,
                     startTime != null ? LocalTime.parse(startTime) : null,
                     endTime != null ? LocalTime.parse(endTime) : null
-            ).stream().map(CourseMapper::toDto).collect(Collectors.toList());
+            ).stream()
+                    .map(CourseMapper::toDto)
+                    .toList();
 
             // 필터링된 일반 강좌 및 장애인 강좌 데이터 조회
             List<CourseResponseDto> generalCourses = generalCourseRepository.findFiltered(
@@ -60,12 +62,15 @@ public class CourseService {
                     sportName,
                     startTime != null ? LocalTime.parse(startTime) : null,
                     endTime != null ? LocalTime.parse(endTime) : null
-            ).stream().map(CourseMapper::toDto).collect(Collectors.toList());
+            ).stream()
+                    .map(CourseMapper::toDto)
+                    .toList();
 
             // 두 데이터를 합쳐 반환
-            List<CourseResponseDto> combinedCourses = Stream.concat(generalCourses.stream(), disabledCourses.stream())
+            List<CourseResponseDto> combinedCourses = Stream.concat(
+                    generalCourses.stream(), disabledCourses.stream())
                     .distinct()
-                    .collect(Collectors.toList());
+                    .toList();
 
 
             // 페이지네이션 처리
