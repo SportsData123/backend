@@ -37,11 +37,11 @@
 <br><br>
 
 ## 🛠 기술 스택
-- Backend Framework: Spring Boot
-- Database: MariaDB with JPA
-- API 통신: RESTful API
-- Build Tool: Gradle
-- Cloud Deployment: AWS EC2
+- **Backend Framework**: Spring Boot
+- **Database**: MariaDB with JPA
+- **API 통신**: RESTful API
+- **Build Tool**: Gradle
+- **Cloud Deployment**: AWS EC2
 
 <br><br>
 
