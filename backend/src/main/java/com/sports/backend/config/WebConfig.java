@@ -12,7 +12,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/api/**")
                 .allowedOrigins(
                         "http://localhost:5173",
-                        "https://national-sports-data.vercel.app/")
+                        "https://national-sports-data.vercel.app/",
+                        "https://www.national-sports-data.site")
                 .allowedMethods("GET", "POST","PUT", "DELETE")
                 .allowedHeaders("*")
                 .allowCredentials(true);
