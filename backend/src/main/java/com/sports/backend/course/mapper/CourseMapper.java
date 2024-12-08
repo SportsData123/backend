@@ -2,8 +2,6 @@ package com.sports.backend.course.mapper;
 
 import com.sports.backend.course.domain.Course;
 import com.sports.backend.course.dto.CourseResponseDto;
-import com.sports.backend.disabledcourse.domain.DisabledCourse;
-import com.sports.backend.generalcourse.domain.GeneralCourse;
 
 public class CourseMapper {
 

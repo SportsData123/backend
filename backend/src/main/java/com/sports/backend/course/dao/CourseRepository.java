@@ -25,11 +25,15 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
             "     (SUBSTRING(:weekday, 4, 1) = '0' OR SUBSTRING(c.weekday, 4, 1) = '1') AND " +
             "     (SUBSTRING(:weekday, 5, 1) = '0' OR SUBSTRING(c.weekday, 5, 1) = '1') AND " +
             "     (SUBSTRING(:weekday, 6, 1) = '0' OR SUBSTRING(c.weekday, 6, 1) = '1') AND " +
-            "     (SUBSTRING(:weekday, 7, 1) = '0' OR SUBSTRING(c.weekday, 7, 1) = '1'))")
+            "     (SUBSTRING(:weekday, 7, 1) = '0' OR SUBSTRING(c.weekday, 7, 1) = '1')) " +
+            "AND (:cityId IS NULL OR c.cityId = :cityId) " +
+            "AND (:districtId IS NULL OR c.districtId = :districtId)")
     Page<Course> findFiltered(@Param("isAccessibleForDisabled") String isAccessibleForDisabled,
                               @Param("weekday") String weekday,
                               @Param("sportName") String sportName,
                               @Param("startTime") LocalTime startTime,
                               @Param("endTime") LocalTime endTime,
+                              @Param("cityId") Integer cityId,
+                              @Param("districtId") Integer districtId,
                               Pageable pageable);
 }
