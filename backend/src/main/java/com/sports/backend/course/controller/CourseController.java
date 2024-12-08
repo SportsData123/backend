@@ -40,6 +40,8 @@ public class CourseController {
             @RequestParam(required = false) String sportName,
             @RequestParam(required = false) String startTime,
             @RequestParam(required = false) String endTime,
+            @RequestParam(required = false) Integer cityId,
+            @RequestParam(required = false) Integer districtId,
             @RequestParam(required = false, defaultValue = "1") int page,
             @RequestParam(required = false, defaultValue = "10") int size) {
 
@@ -51,7 +53,7 @@ public class CourseController {
 
         // 서비스 호출하여 필터링된 강좌 목록 조회
         PaginatedCourseResponseDto courses = courseService.getAllCourses(
-                pageNumber, size, isAccessibleForDisabled, weekday, sportName, startTime, endTime);
+                pageNumber, size, isAccessibleForDisabled, weekday, sportName, startTime, endTime, cityId, districtId);
 
         // 성공적인 응답 반환
         return ResponseEntity.ok(new ApiResponse<>(200, "강좌 목록 조회 성공", courses));

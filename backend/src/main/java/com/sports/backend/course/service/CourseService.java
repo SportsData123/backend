@@ -40,45 +40,46 @@ public class CourseService {
      * @param sportName 스포츠 종목 필터 (optional)
      * @param startTime 강좌 시작 시간 필터 (optional)
      * @param endTime 강좌 종료 시간 필터 (optional)
+     * @param cityId 시/도 ID 필터 (optional)
+     * @param districtId 시/군/구 ID 필터 (optional)
      * @return PaginatedCourseResponseDto 페이징 처리된 강좌 데이터와 메타 정보
      */
     @Transactional(readOnly = true)
-    public PaginatedCourseResponseDto getAllCourses(int page, int size, String isAccessibleForDisabled,
-                                                    String weekday, String sportName, String startTime, String endTime) {
-        {
-            Pageable pageable = PageRequest.of(page, size);
-            List<CourseResponseDto> result = new ArrayList<>();
-            int totalElements = 0;
-            int currentPage = page;
+    public PaginatedCourseResponseDto getAllCourses(int page, int size,
+                                                    String isAccessibleForDisabled,
+                                                    String weekday,
+                                                    String sportName,
+                                                    String startTime,
+                                                    String endTime,
+                                                    Integer cityId,
+                                                    Integer districtId) {
 
-            while (result.size() < size) {
-                Page<Course> coursePage = courseRepository.findFiltered(
-                        isAccessibleForDisabled,
-                        weekday,
-                        sportName,
-                        startTime != null ? LocalTime.parse(startTime) : null,
-                        endTime != null ? LocalTime.parse(endTime) : null,
-                        pageable
-                );
+        Pageable pageable = PageRequest.of(page, size);
 
-                result.addAll(coursePage.getContent().stream()
-                        .map(CourseMapper::toDto)
-                        .toList());
+        // 필터링된 강좌 데이터 조회
+        Page<Course> coursePage = courseRepository.findFiltered(
+                isAccessibleForDisabled,
+                weekday,
+                sportName,
+                startTime != null ? LocalTime.parse(startTime) : null,
+                endTime != null ? LocalTime.parse(endTime) : null,
+                cityId,
+                districtId,
+                pageable
+        );
 
-                if (!coursePage.hasNext()) break; // 더 이상 페이지가 없으면 종료
+        // 엔티티를 DTO로 변환
+        List<CourseResponseDto> courses = coursePage.getContent().stream()
+                .map(CourseMapper::toDto)
+                .toList();
 
-                currentPage++;
-                pageable = PageRequest.of(currentPage, size);
-            }
-
-            // 페이징 정보 포함 응답 생성
-            return PaginatedCourseResponseDto.builder()
-                    .totalCount(totalElements)
-                    .page(page + 1) // 요청 페이지 0-based에서 1-based로 변환
-                    .size(size)
-                    .totalPages((totalElements + size - 1) / size) // 총 페이지 계산
-                    .courses(result)
-                    .build();
-        }
+        // 페이징 정보 포함 응답 생성
+        return PaginatedCourseResponseDto.builder()
+                .totalCount(coursePage.getTotalElements()) // 총 강좌 수
+                .page(page + 1)                            // 요청 페이지 0-based에서 1-based로 변환
+                .size(size)                                // 페이지 크기
+                .totalPages(coursePage.getTotalPages())    // 총 페이지 수
+                .courses(courses)                         // 현재 페이지 데이터
+                .build();
     }
 }
